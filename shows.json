@@ -264,6 +264,14 @@
         "nostrlink": "https://primal.net/p/npub1vxfg5aqvj3juvzflry2t9m8fn7u4r0dttjtv099ntn2l2e0h9n3qzxhunh"
     },
     {
+        "title": "The Reorg",
+        "imgsrc": "assets/img/reorg.jpg",
+        "description": "A deep dive into the Satoshi Nakamoto Institute archives",
+        "fountainlink": "https://fountain.fm/show/cwGDQTPuAFInHHapAD92",
+        "xlink": "https://x.com/NakamotoInst",
+        "nostrlink": "https://primal.net/sni"
+    },
+    {
         "title": "The Transformation of Value",
         "imgsrc": "assets/img/tov.jpg",
         "description": "A Bitcoin podcast by Cody Ellingham exploring the impacts of Bitcoin thinking on the world of art, culture, and philosophy. Made in New Zealand.",
