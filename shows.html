@@ -1,109 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="This a Bitcoin content focused radio station designed primarily for the Orange Rust Server" />
-        <meta name="author" content="Good Morning Bitcoin" />
-        <title>Good Morning Bitcoin</title>
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-        <!-- Font Awesome icons (free version)-->
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-        <!-- Google fonts-->
-        <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="css/styles.css" rel="stylesheet" />
-    </head>
-    <body id="page-top">
-        <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-shrink" id="mainNav">
-            <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="https://goodmorningbitcoin.com/">Good Morning Bitcoin</a>
-                <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    Menu
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="https://www.orangem.art/">Orange</a></li>
-                        <li class="nav-item"><a class="nav-link" href="https://snort.social./p/npub1n35s0hnjukw675njzqargeym7l9qzpg2dr6q9924yr798kafwvxsgp63m0">Snort</a></li>
-                        <li class="nav-item"><a class="nav-link" href="shows.html">Shows</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-                <!-- Shows Section-->
-    <section class="projects-section bg-light" id="shows">                 
-        <div class="container bg-black px-lg-0">
-            <div id="shows-container">
-                <!-- Shows will be dynamically inserted here -->
-            </div>
-        </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Good Morning Bitcoin - Shows</title>
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/ui@latest/dist/tailwind-ui.min.css">
+  <style>
+    body { font-family: sans-serif; background-color: #fefdfc; }
+    .orange { color: #e86228; }
+    .bg-orange { background-color: #e86228; }
+    .text-xl-bold { font-size: 1.5rem; font-weight: bold; }
+  </style>
+</head>
+<body class="text-gray-900">
+  <header class="bg-orange text-white p-4">
+    <div class="max-w-5xl mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">GOOD MORNING BITCOIN.COM</h1>
+      <nav class="space-x-4">
+        <a href="https://goodmorningbitcoin.com/about.html" class="hover:underline">About</a>
+        <a href="https://rustysats.com" class="hover:underline">RustySats</a>
+        <a href="https://www.orangem.art/" class="hover:underline">Orange</a>
+        <a href="https://ditto.pub/npub1n35s0hnjukw675njzqargeym7l9qzpg2dr6q9924yr798kafwvxsgp63m0" class="hover:underline">Nostr</a>
+        <a href="https://goodmorningbitcoin.com/shows.html" class="hover:underline">Shows</a>
+      </nav>
+    </div>
+  </header>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                fetch('https://raw.githubusercontent.com/goodmorningbitcoin/goodmorningbitcoin-website/main/shows.json')
-                .then(response => response.json())
-                .then(data => {
-                    const showsContainer = document.getElementById('shows-container');
-                    let isLeft = true;  // To alternate image positioning
-            
-                    data.forEach(show => {
-                        const showRow = document.createElement('div');
-                        showRow.className = 'row bg-black gx-0 align-items-center'; // Full black background
-            
-                        const imgColClass = isLeft ? 'col-md-6' : 'col-md-6 order-md-2';
-                        const contentColClass = isLeft ? 'col-md-6 d-flex flex-column align-items-center justify-content-center text-center' : 'col-md-6 d-flex flex-column align-items-center justify-content-center text-center order-md-1';
-            
-                        const imgDiv = document.createElement('div');
-                        imgDiv.className = imgColClass;
-                        const img = document.createElement('img');
-                        img.src = show.imgsrc;
-                        img.alt = show.title;
-                        img.className = 'img-fluid rounded';
-                        imgDiv.appendChild(img);
-            
-                        const contentDiv = document.createElement('div');
-                        contentDiv.className = contentColClass;
-                        const title = document.createElement('h2');
-                        title.className = 'font-weight-light text-white'; // Centered white title
-                        title.textContent = show.title;
-                        const description = document.createElement('p');
-                        description.className = 'text-secondary'; // Centered off-white description
-                        description.textContent = show.description;
-                        const linksDiv = document.createElement('div');
-                        linksDiv.className = 'mt-2';
-            
-                        addLink(show.fountainlink, 'Fountain', linksDiv);
-                        addLink(show.xlink, 'X', linksDiv);
-                        addLink(show.nostrlink, 'Nostr', linksDiv);
-            
-                        contentDiv.appendChild(title);
-                        contentDiv.appendChild(description);
-                        contentDiv.appendChild(linksDiv);
-            
-                        showRow.appendChild(imgDiv);
-                        showRow.appendChild(contentDiv);
-                        showsContainer.appendChild(showRow);
-            
-                        isLeft = !isLeft; // Alternate for the next show
-                    });
-                })
-                .catch(error => console.error('Error fetching the show data:', error));
-            });
-            
-            function addLink(url, text, container) {
-                if (url) {
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.textContent = text;
-                    link.className = 'btn btn-primary btn-sm mx-1';
-                    container.appendChild(link);
-                }
-            }
-            </script>
-                        
+  <main class="max-w-5xl mx-auto py-10 space-y-12">
+    <section>
+      <h2 class="text-2xl font-bold mb-6">All Shows</h2>
+      <div id="shows-container" class="space-y-10"></div>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      fetch('https://raw.githubusercontent.com/goodmorningbitcoin/goodmorningbitcoin-website/main/shows.json')
+        .then(response => response.json())
+        .then(data => {
+          const container = document.getElementById('shows-container');
+          data.forEach((show, index) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = `md:flex md:items-center md:space-x-8 ${index % 2 ? 'md:flex-row-reverse' : ''}`;
+
+            const img = document.createElement('img');
+            img.src = show.imgsrc;
+            img.alt = show.title;
+            img.className = 'w-full md:w-1/2 rounded shadow';
+
+            const content = document.createElement('div');
+            content.className = 'mt-4 md:mt-0 md:w-1/2';
+            content.innerHTML = `$1<div class=\"space-x-2 flex justify-center\">
+                ${show.fountainlink ? `<a href="${show.fountainlink}" class="bg-orange text-white px-3 py-1 rounded">Fountain</a>` : ''}
+                ${show.xlink ? `<a href="${show.xlink}" class="bg-orange text-white px-3 py-1 rounded">X</a>` : ''}
+                ${show.nostrlink ? `<a href="${show.nostrlink}" class="bg-orange text-white px-3 py-1 rounded">Nostr</a>` : ''}
+              </div>
+            `;
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(content);
+            container.appendChild(wrapper);
+          });
+        })
+        .catch(error => console.error('Error loading shows:', error));
+    });
+  </script>
 </body>
 </html>
