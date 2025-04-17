@@ -1,152 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Good Morning Bitcoin</title>
-  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/ui@latest/dist/tailwind-ui.min.css" />
-  <!-- MailerLite styles -->
-  <style type="text/css">@import url("https://assets.mlcdn.com/fonts.css?version=1744733");</style>
-  <style type="text/css">
-    .ml-form-embedSubmitLoad { display:inline-block;width:20px;height:20px; }
-    .ml-form-embedSubmitLoad:after { content:" ";display:block;width:11px;height:11px;margin:1px;border-radius:50%;border:4px solid #fff;border-color:#fff #fff #fff transparent;animation:ml-form-embedSubmitLoad 1.2s linear infinite; }
-    @keyframes ml-form-embedSubmitLoad {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-  </style>
-  <style>
-    body { font-family:sans-serif; background-color:#fefdfc; }
-    .orange { color:#e86228; }
-    .bg-orange { background-color:#e86228; }
-    .text-xl-bold { font-size:1.5rem; font-weight:bold; }
-  </style>
-</head>
-<body class="text-gray-900">
-
-  <!-- Header -->
-  <header class="bg-orange text-white p-4">
-    <div class="max-w-5xl mx-auto flex justify-between items-center">
-      <h1 class="text-2xl font-bold">GOOD MORNING BITCOIN.COM</h1>
-      <nav class="space-x-4">
-        <a href="https://goodmorningbitcoin.com/about.html" class="hover:underline">About</a>
-        <a href="https://rustysats.com" class="hover:underline">RustySats</a>
-        <a href="https://www.orangem.art/" class="hover:underline">Orange</a>
-        <a href="https://ditto.pub/npub1n35s0hnjukw675njzqargeym7l9qzpg2dr6q9924yr798kafwvxsgp63m0" class="hover:underline">Nostr</a>
-        <a href="https://goodmorningbitcoin.com/shows.html" class="hover:underline">Shows</a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Now Playing -->
-  <section class="bg-black text-white py-6">
-    <div class="max-w-5xl mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-2">The Voice of Bitcoin, Every Morning.</h2>
-      <iframe src="https://radio.goodmorningbitcoin.com/public/goodmorningbitcoin/embed?theme=dark" frameborder="0" allowtransparency="true" style="width:100%;min-height:150px;border:0;"></iframe>
-    </div>
-  </section>
-
-  <!-- Main Content -->
-  <main class="max-w-5xl mx-auto py-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-
-    <!-- Featured Show -->
-    <section class="md:col-span-1 p-4 border rounded">
-      <h3 class="text-xl-bold mb-2">Featured Show</h3>
-      <div id="featured-show">Loading show…</div>
-    </section>
-
-    <!-- Bitcoin News Brief -->
-    <section class="md:col-span-1 p-4 border rounded">
-      <h3 class="text-xl-bold mb-2">Bitcoin News Brief</h3>
-      <ul id="news-briefs" class="space-y-2">
-        <li>Loading news…</li>
-      </ul>
-    </section>
-
-    <!-- Bitcoin 101 + Email Signup Stack -->
-    <div class="md:col-span-1 space-y-6">
-      <!-- Bitcoin 101 -->
-      <section class="p-4 border rounded">
-        <h3 class="text-xl-bold mb-2">Bitcoin 101</h3>
-        <p>Learn about Bitcoin basics.</p>
-        <a href="https://bitcoin101.goodmorningbitcoin.com" class="inline-block mt-2 bg-orange text-white px-4 py-2 rounded">Get Started</a>
-      </section>
-      <!-- Email Signup -->
-      <section class="p-4 border rounded">
-        <h3 class="text-xl-bold mb-2">Email Signup</h3>
-        <div id="mlb2-24950357" class="ml-form-embedContainer ml-subscribe-form ml-subscribe-form-24950357">
-          <div class="ml-form-align-center">
-            <div class="ml-form-embedWrapper embedForm">
-              <div class="ml-form-embedBody row-form">
-                <div class="ml-form-embedContent mb-2">
-                  <p>Signup for the latest Bitcoin news!</p>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="This a Bitcoin content focused radio station designed primarily for the Orange Rust Server" />
+        <meta name="author" content="Good Morning Bitcoin" />
+        <title>Good Morning Bitcoin</title>
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-shrink" id="mainNav">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="https://goodmorningbitcoin.com/">Good Morning Bitcoin</a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="https://www.orangem.art/">Orange</a></li>
+                        <li class="nav-item"><a class="nav-link" href="https://snort.social./p/npub1n35s0hnjukw675njzqargeym7l9qzpg2dr6q9924yr798kafwvxsgp63m0">Snort</a></li>
+                        <li class="nav-item"><a class="nav-link" href="shows.html">Shows</a></li>
+                    </ul>
                 </div>
-                <form class="ml-block-form mt-2" action="https://assets.mailerlite.com/jsonp/1459975/forms/151930403370829428/subscribe" method="post" target="_blank">
-                  <div class="ml-form-formContent">
-                    <div class="ml-form-fieldRow ml-last-item">
-                      <div class="ml-field-group ml-field-email ml-validate-email ml-validate-required">
-                        <input type="email" name="fields[email]" placeholder="Email" required class="w-full p-3 border border-gray-300 rounded mb-2" />
-                      </div>
-                    </div>
-                  </div>
-                  <input type="hidden" name="ml-submit" value="1">
-                  <div class="ml-form-embedSubmit">
-                    <button type="submit" class="bg-black text-white px-4 py-2 rounded w-full">Subscribe</button>
-                    <button disabled style="display:none;" class="loading"><div class="ml-form-embedSubmitLoad"></div><span class="sr-only">Loading...</span></button>
-                  </div>
-                  <input type="hidden" name="anticsrf" value="true">
-                </form>
-              </div>
             </div>
-          </div>
+        </nav>
+                <!-- Shows Section-->
+    <section class="projects-section bg-light" id="shows">                 
+        <div class="container bg-black px-lg-0">
+            <div id="shows-container">
+                <!-- Shows will be dynamically inserted here -->
+            </div>
         </div>
-        <script src="https://groot.mailerlite.com/js/w/webforms.min.js?v176e10baa5e7ed80d35ae235be3d5024" async></script>
-      </section>
-    </div>
 
-    <!-- Network Stats -->
-    <section class="md:col-span-3 p-4 bg-black text-white rounded">
-      <div id="network-stats" class="text-lg font-mono text-center">Loading stats…</div>
-    </section>
-
-    <!-- Latest Episodes -->
-    <section class="md:col-span-3 p-4 border rounded">
-      <h3 class="text-xl-bold mb-2">Latest Episodes</h3>
-      <iframe src="https://radio.goodmorningbitcoin.com/public/goodmorningbitcoin/history?theme=light" frameborder="0" allowtransparency="true" style="width:100%;min-height:300px;border:0;"></iframe>
-    </section>
-
-  </main>
-
-  <!-- Scripts -->
-  <script>
-    // Network stats
-    Promise.all([
-      fetch("https://mempool.space/api/v1/fees/recommended").then(r=>r.json()),
-      fetch("https://mempool.space/api/v1/blocks/tip/height").then(r=>r.json()),
-      fetch("https://mempool.space/api/v1/mining/hashrate/3d").then(r=>r.json()),
-      fetch("https://mempool.space/api/v1/difficulty-adjustment").then(r=>r.json()),
-      fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd").then(r=>r.json())
-    ]).then(([fees,height,hrData,diffAdj,priceData])=>{
-      const price=priceData.bitcoin?.usd?`$${priceData.bitcoin.usd.toLocaleString()}`:"N/A";
-      const fee=fees.fastestFee?`${fees.fastestFee} sat/vB`:"N/A";
-      let difficulty="N/A";
-      if(hrData.currentDifficulty){const exp=Math.floor(Math.log10(hrData.currentDifficulty));const power=Math.floor(exp/3)*3;const base=hrData.currentDifficulty/Math.pow(10,power);difficulty=`${base.toFixed(1)}×10<sup>${power}</sup>`;}
-      let nextDate="N/A";
-      if(diffAdj.estimatedRetargetDate){let ts=diffAdj.estimatedRetargetDate;let ms=ts<1e12?ts*1000:ts;nextDate=new Date(ms).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}      
-      let hashRate="N/A";
-      if(hrData.currentHashrate){const units=["H/s","kH/s","MH/s","GH/s","TH/s","PH/s","EH/s","ZH/s"];let v=hrData.currentHashrate,i=0;while(v>=1000&&i<units.length-1){v/=1000;i++;}hashRate=v.toFixed(2)+" "+units[i];}
-      document.getElementById("network-stats").innerHTML=`${price} | ${fee} | ${height} | ${difficulty} | Next Difficulty: ${nextDate} | ${hashRate}`;
-    }).catch(e=>{console.error(e);document.getElementById("network-stats").innerText="Failed to load stats.";});
-
-    // Bitcoin news
-    async function fetchNostrContent(){const relay=window.NostrTools.relayInit("wss://relay.nostr.example.com");await relay.connect();relay.sub([{authors:["npub1yourpubkey"],kinds:[1],limit:3}]).on("event",ev=>{const li=document.createElement("li");li.innerText=ev.content;document.getElementById("news-briefs").appendChild(li);});}
-
-    // Featured show
-    fetch("https://raw.githubusercontent.com/goodmorningbitcoin/goodmorningbitcoin-website/main/shows.json")
-      .then(r=>r.json())
-      .then(data=>{if(Array.isArray(data)&&data.length){const s=data[Math.floor(Math.random()*data.length)];const imgUrl=`https://raw.githubusercontent.com/goodmorningbitcoin/goodmorningbitcoin-website/main/${s.imgsrc}`;document.getElementById("featured-show").innerHTML=`<img src="${imgUrl}" alt="${s.title}" class="w-full h-auto mb-2 rounded"/><strong>${s.title}</strong><br/><a href="${s.fountainlink}" class="text-blue-600 underline" target="_blank">Listen now</a>`;}})
-      .catch(e=>console.error("Error loading shows:",e));
-
-    // Load nostr-tools
-    const s=document.createElement("script");s.src="https://unpkg.com/nostr-tools/lib/nostr.bundle.js";s.onload=fetchNostrContent;document.body.appendChild(s);
-  </script>
-
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                fetch('https://raw.githubusercontent.com/goodmorningbitcoin/goodmorningbitcoin-website/main/shows.json')
+                .then(response => response.json())
+                .then(data => {
+                    const showsContainer = document.getElementById('shows-container');
+                    let isLeft = true;  // To alternate image positioning
+            
+                    data.forEach(show => {
+                        const showRow = document.createElement('div');
+                        showRow.className = 'row bg-black gx-0 align-items-center'; // Full black background
+            
+                        const imgColClass = isLeft ? 'col-md-6' : 'col-md-6 order-md-2';
+                        const contentColClass = isLeft ? 'col-md-6 d-flex flex-column align-items-center justify-content-center text-center' : 'col-md-6 d-flex flex-column align-items-center justify-content-center text-center order-md-1';
+            
+                        const imgDiv = document.createElement('div');
+                        imgDiv.className = imgColClass;
+                        const img = document.createElement('img');
+                        img.src = show.imgsrc;
+                        img.alt = show.title;
+                        img.className = 'img-fluid rounded';
+                        imgDiv.appendChild(img);
+            
+                        const contentDiv = document.createElement('div');
+                        contentDiv.className = contentColClass;
+                        const title = document.createElement('h2');
+                        title.className = 'font-weight-light text-white'; // Centered white title
+                        title.textContent = show.title;
+                        const description = document.createElement('p');
+                        description.className = 'text-secondary'; // Centered off-white description
+                        description.textContent = show.description;
+                        const linksDiv = document.createElement('div');
+                        linksDiv.className = 'mt-2';
+            
+                        addLink(show.fountainlink, 'Fountain', linksDiv);
+                        addLink(show.xlink, 'X', linksDiv);
+                        addLink(show.nostrlink, 'Nostr', linksDiv);
+            
+                        contentDiv.appendChild(title);
+                        contentDiv.appendChild(description);
+                        contentDiv.appendChild(linksDiv);
+            
+                        showRow.appendChild(imgDiv);
+                        showRow.appendChild(contentDiv);
+                        showsContainer.appendChild(showRow);
+            
+                        isLeft = !isLeft; // Alternate for the next show
+                    });
+                })
+                .catch(error => console.error('Error fetching the show data:', error));
+            });
+            
+            function addLink(url, text, container) {
+                if (url) {
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.textContent = text;
+                    link.className = 'btn btn-primary btn-sm mx-1';
+                    container.appendChild(link);
+                }
+            }
+            </script>
+                        
 </body>
 </html>
