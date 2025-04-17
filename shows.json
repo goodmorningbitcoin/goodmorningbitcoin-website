@@ -32,14 +32,6 @@
         "nostrlink": "https://primal.net/p/npub1h8nk2346qezka5cpm8jjh3yl5j88pf4ly2ptu7s6uu55wcfqy0wq36rpev"
     },
     {
-        "title": "Bitcoin Dad Pod",
-        "imgsrc": "assets/img/dad.jpg",
-        "description": "The Bitcoin Dad is here to explain the context around the monetary revolution that is Bitcoin. The technological, social, and financial complexities of Bitcoin are hard to understand and your Bitcoin Dad will give you a foundation to make up your own mind. He'll cover news, history, and a lot of practical projects that you can do yourself to get started with Bitcoin!",
-        "fountainlink": "https://www.fountain.fm/show/iSDKQzR5V5DCLn2AuUnI",
-        "xlink": "https://x.com/bitcoindadpod",
-        "nostrlink": ""
-    },
-    {
         "title": "Bitcoin for Boomers with Gary Leland",
         "imgsrc": "assets/img/b4b.jpg",
         "description": "Gary Leland is the original Bitcoin Boomer and wants to help educate other Boomers about Bitcoin.Join Gary as he brings you great information about Bitcoin.",
@@ -168,14 +160,6 @@
         "nostrlink": ""
     },
     {
-        "title": "The Lightning Pulse",
-        "imgsrc": "assets/img/lp.png",
-        "description": "A show focused on the Bitcoin Lightning Network ongoing developments, news, and discussions. The world of internet native value transfer is changing fast, and we refuse to be left behind.",
-        "fountainlink": "https://www.fountain.fm/show/of4HC1w4qnqi7dUj7XPG",
-        "xlink": "https://x.com/lightningpulse1",
-        "nostrlink": ""
-    },
-    {
         "title": "Once Bitten! A Bitcoin Podcast",
         "imgsrc": "assets/img/oncebitten.jpg",
         "description": "Bitcoin can be a very deep and confusing rabbit hole to fall into. This podcast is for people who are looking for answers. Daniel Prince, author of Choose Life, is on a mission to share real life stories of how Bitcoin has changed and shaped individuals and families lives forever.",
@@ -286,13 +270,5 @@
         "fountainlink": "https://www.fountain.fm/show/sbfNnARG7zj3nL6Xfill",
         "xlink": "https://x.com/UGMFPodcast",
         "nostrlink": "https://primal.net/p/npub1jcympy69pht7ptan39se4nd09e4q66qhey649uu3rczm2zh88c7s0n2890"
-    },
-    {
-        "title": "Winter₿erry Lane",
-        "imgsrc": "assets/img/winterberry.jpg",
-        "description": "Discussion between two bitcoiners from Winter₿erry Lane.",
-        "fountainlink": "https://www.fountain.fm/show/dmav6j9CX4F4hpwuKwaQ",
-        "xlink": "",
-        "nostrlink": "https://primal.net/p/npub160t5zfxalddaccdc7xx30sentwa5lrr3rq4rtm38x99ynf8t0vwsvzyjc9"
     }
 ]
