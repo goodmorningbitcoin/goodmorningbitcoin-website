@@ -50,10 +50,13 @@
 
             const content = document.createElement('div');
             content.className = 'mt-4 md:mt-0 md:w-1/2';
-            content.innerHTML = `$1<div class=\"space-x-2 flex justify-center\">
-                ${show.fountainlink ? `<a href="${show.fountainlink}" class="bg-orange text-white px-3 py-1 rounded">Fountain</a>` : ''}
-                ${show.xlink ? `<a href="${show.xlink}" class="bg-orange text-white px-3 py-1 rounded">X</a>` : ''}
-                ${show.nostrlink ? `<a href="${show.nostrlink}" class="bg-orange text-white px-3 py-1 rounded">Nostr</a>` : ''}
+            content.innerHTML = `
+              <h3 class=\"text-xl font-bold mb-2\">${show.title}</h3>
+              <p class=\"mb-4 text-gray-700\">${show.description}</p>
+              <div class=\"space-x-2 flex justify-center\">
+                ${show.fountainlink ? `<a href=\"${show.fountainlink}\" class=\"bg-orange text-white px-3 py-1 rounded\">Fountain</a>` : ''}
+                ${show.xlink ? `<a href=\"${show.xlink}\" class=\"bg-orange text-white px-3 py-1 rounded\">X</a>` : ''}
+                ${show.nostrlink ? `<a href=\"${show.nostrlink}\" class=\"bg-orange text-white px-3 py-1 rounded\">Nostr</a>` : ''}
               </div>
             `;
 
