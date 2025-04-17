@@ -53,7 +53,7 @@
     <!-- Bitcoin News Brief -->
     <section class="md:col-span-1 p-4 border rounded">
       <h3 class="text-xl-bold mb-2">Bitcoin News Brief</h3>
-      <ul id="news-briefs" class="space-y-2 overflow-auto" style="max-height:0;"></ul>
+      <ul id="news-briefs" class="space-y-2 overflow-hidden" style="max-height:0;"></ul>
     </section>
 
     <!-- Bitcoin 101 + Email Signup -->
@@ -72,10 +72,8 @@
           <div class="ml-form-align-center">
             <div class="ml-form-embedWrapper embedForm">
               <div class="ml-form-embedBody ml-form-embedBodyDefault row-form">
-                <div class="ml-form-embedContent" style="padding-bottom:1rem;">
-                  <p>Signup for the latest Bitcoin news!</p>
-                </div>
-                <form class="ml-block-form" action="https://assets.mailerlite.com/jsonp/1459975/forms/151930403370829428/subscribe" method="post" target="_blank">
+                <div class="ml-form-embedContent mb-2" style="padding-bottom:1rem;"><p>Signup for the latest Bitcoin news!</p></div>
+                <form class="ml-block-form mt-2" action="https://assets.mailerlite.com/jsonp/1459975/forms/151930403370829428/subscribe" method="post" target="_blank">
                   <div class="ml-form-formContent">
                     <div class="ml-form-fieldRow ml-last-item">
                       <div class="ml-field-group ml-field-email ml-validate-email ml-validate-required">
@@ -119,7 +117,10 @@
       if (!newsReady || !showReady) return;
       const ul = document.getElementById('news-briefs');
       ul.innerHTML = '';
-      const maxH = document.getElementById('featured-show-container').offsetHeight;
+      // Conservative height: reduce featured height by 16px
+      const fsHeight = document.getElementById('featured-show-container').offsetHeight;
+        const marginBufferPx = 40; // conservative buffer
+        const maxH = fsHeight - marginBufferPx;
       ul.style.maxHeight = maxH + 'px';
       for (const post of newsPosts) {
         const li = document.createElement('li'); li.className = 'flex items-center space-x-2';
@@ -135,7 +136,7 @@
         a.target = '_blank'; a.className = 'text-blue-600 underline flex-1';
         li.appendChild(a);
         ul.appendChild(li);
-        if (ul.scrollHeight > maxH) { ul.removeChild(li); ul.style.overflowY = 'auto'; break; }
+        if (ul.scrollHeight > maxH) { ul.removeChild(li); break; }
       }
     }
 
@@ -168,7 +169,7 @@
       fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd').then(r => r.json())
     ]).then(([fees, height, hrData, diffAdj, priceData]) => {
       const price = priceData.bitcoin?.usd ? `$${priceData.bitcoin.usd.toLocaleString()}` : 'N/A';
-      const fee   = fees.fastestFee ? `${fees.fastestFee} sat/vB` : 'N/A';
+      const fee = fees.fastestFee ? `${fees.fastestFee} sat/vB` : 'N/A';
       let difficulty = 'N/A';
       if (hrData.currentDifficulty) {
         const exp = Math.floor(Math.log10(hrData.currentDifficulty));
@@ -191,6 +192,7 @@
       }
       document.getElementById('network-stats').innerHTML = `${price} | ${fee} | ${height} | ${difficulty} | Next Difficulty: ${nextDate} | ${hashRate}`;
     }).catch(err => { console.error(err); document.getElementById('network-stats').innerText = 'Failed to load stats.'; });
+
   </script>
 
 </body>
