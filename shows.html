@@ -32,12 +32,13 @@
       <div id="shows-container" class="space-y-10"></div>
 <style>
   .show-box {
-    border: 1px solid #ddd;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  }
+  border: 1px solid #333;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background-color: #000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  color: white;
+}
 </style>
     </section>
   </main>
@@ -60,8 +61,8 @@
             const content = document.createElement('div');
             content.className = 'mt-4 md:mt-0 md:w-1/2 md:px-6';
             content.innerHTML = `
-              <h3 class=\"text-xl font-bold mb-2\">${show.title}</h3>
-              <p class=\"mb-4 text-gray-700\">${show.description}</p>
+              <h3 class=\"text-2xl font-extrabold mb-2 text-white\">${show.title}</h3>
+              <p class=\"mb-4 text-white\">${show.description}</p>
               <div class=\"space-x-2 flex justify-center\">
                 ${show.fountainlink ? `<a href=\"${show.fountainlink}\" class=\"bg-orange text-white px-3 py-1 rounded\">Fountain</a>` : ''}
                 ${show.xlink ? `<a href=\"${show.xlink}\" class=\"bg-orange text-white px-3 py-1 rounded\">X</a>` : ''}
