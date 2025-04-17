@@ -15,7 +15,7 @@
 <body class="text-gray-900">
   <header class="bg-orange text-white p-4">
     <div class="max-w-5xl mx-auto flex justify-between items-center">
-      <h1 class="text-2xl font-bold">GOOD MORNING BITCOIN.COM</h1>
+      <a href="/" class="text-2xl font-bold hover:underline">GOOD MORNING BITCOIN.COM</a>
       <nav class="space-x-4">
         <a href="https://goodmorningbitcoin.com/about.html" class="hover:underline">About</a>
         <a href="https://rustysats.com" class="hover:underline">RustySats</a>
@@ -30,6 +30,15 @@
     <section>
       <h2 class="text-2xl font-bold mb-6">All Shows</h2>
       <div id="shows-container" class="space-y-10"></div>
+<style>
+  .show-box {
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+</style>
     </section>
   </main>
 
@@ -41,7 +50,7 @@
           const container = document.getElementById('shows-container');
           data.forEach((show, index) => {
             const wrapper = document.createElement('div');
-            wrapper.className = `md:flex md:items-center md:space-x-8 ${index % 2 ? 'md:flex-row-reverse' : ''}`;
+            wrapper.className = `show-box md:flex md:items-center md:space-x-8 ${index % 2 ? 'md:flex-row-reverse' : ''}`;
 
             const img = document.createElement('img');
             img.src = show.imgsrc;
@@ -49,7 +58,7 @@
             img.className = 'w-full md:w-1/2 rounded shadow';
 
             const content = document.createElement('div');
-            content.className = 'mt-4 md:mt-0 md:w-1/2';
+            content.className = 'mt-4 md:mt-0 md:w-1/2 md:px-6';
             content.innerHTML = `
               <h3 class=\"text-xl font-bold mb-2\">${show.title}</h3>
               <p class=\"mb-4 text-gray-700\">${show.description}</p>
