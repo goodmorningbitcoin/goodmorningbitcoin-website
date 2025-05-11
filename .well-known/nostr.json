@@ -1,0 +1,8 @@
+{
+  "names": {
+    "_": "9c6907de72e59daf5272103a34649bf7ca01050a68f402955520fc53dba9730d"
+  },
+  "relays": {
+    "9c6907de72e59daf5272103a34649bf7ca01050a68f402955520fc53dba9730d": [ "wss://relay.goodmorningbitcoin.com", "wss://relay.damus.io" ]
+  }
+}
