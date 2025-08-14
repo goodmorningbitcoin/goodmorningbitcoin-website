@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Send, MessageCircle, Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useNostr } from '@nostrify/react';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useNostrPublish } from '@/hooks/useNostrPublish';
+import { useAuthor } from '@/hooks/useAuthor';
+import { genUserName } from '@/lib/genUserName';
 
 // NIP-28 Channel Chat for Good Morning Bitcoin
 const CHANNEL_ID = 'goodmorningbitcoin';
@@ -17,7 +19,6 @@ interface ChatMessage {
   author: string;
   content: string;
   timestamp: number;
-  authorName?: string;
 }
 
 export function LiveChat() {
@@ -27,34 +28,119 @@ export function LiveChat() {
   const { nostr } = useNostr();
   const { user } = useCurrentUser();
   const { mutate: createEvent } = useNostrPublish();
-  const queryClient = useQueryClient();
 
-  // Fetch chat messages (NIP-28 kind 42 events)
-  const { data: messages = [], isLoading } = useQuery({
-    queryKey: ['chat-messages', CHANNEL_ID],
-    queryFn: async (c) => {
-      const signal = AbortSignal.any([c.signal, AbortSignal.timeout(3000)]);
-      const events = await nostr.query([
-        {
-          kinds: [42], // NIP-28 channel message
-          '#e': [CHANNEL_ID],
-          limit: 50
+  // Real-time chat messages state
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Set up real-time REQ subscription for chat messages
+  useEffect(() => {
+    let isSubscribed = true;
+    let abortController: AbortController | undefined;
+
+    const setupRealtimeSubscription = async () => {
+      try {
+        setIsLoading(true);
+        abortController = new AbortController();
+        
+        // First get recent messages using query
+        const initialEvents = await nostr.query([
+          {
+            kinds: [42], // NIP-28 channel message
+            '#e': [CHANNEL_ID],
+            limit: 50
+          }
+        ], { signal: AbortSignal.timeout(3000) });
+
+        if (!isSubscribed) return;
+
+        // Convert initial events to messages
+        const initialMessages = initialEvents
+          .sort((a, b) => a.created_at - b.created_at)
+          .map((event): ChatMessage => ({
+            id: event.id,
+            author: event.pubkey,
+            content: event.content,
+            timestamp: event.created_at * 1000,
+          }));
+        
+        setMessages(initialMessages);
+        setIsLoading(false);
+
+        // Set up real-time REQ streaming for new messages
+        const streamNewMessages = async () => {
+          if (!isSubscribed) return;
+          
+          try {
+            // Use REQ streaming for real-time updates
+            for await (const msg of nostr.req([
+              {
+                kinds: [42],
+                '#e': [CHANNEL_ID],
+                since: Math.floor(Date.now() / 1000) // Only new messages from now
+              }
+            ], { signal: abortController!.signal })) {
+              
+              if (!isSubscribed) break;
+              
+              // Handle EVENT messages
+              if (msg[0] === 'EVENT') {
+                const event = msg[2];
+                
+                const newMessage: ChatMessage = {
+                  id: event.id,
+                  author: event.pubkey,
+                  content: event.content,
+                  timestamp: event.created_at * 1000,
+                };
+
+                setMessages(prev => {
+                  // Check if message already exists (deduplication)
+                  if (prev.some(m => m.id === newMessage.id)) return prev;
+                  
+                  const updated = [...prev, newMessage]
+                    .sort((a, b) => a.timestamp - b.timestamp);
+                  // Keep only last 100 messages for performance
+                  return updated.slice(-100);
+                });
+              }
+              
+              // Handle EOSE (End of Stored Events) - continue streaming
+              if (msg[0] === 'EOSE') {
+                console.log('Live chat: Connected to real-time stream');
+              }
+              
+              // Handle CLOSED - relay closed the subscription
+              if (msg[0] === 'CLOSED') {
+                console.log('Live chat: Relay closed subscription');
+                break;
+              }
+            }
+          } catch (error) {
+            if (isSubscribed) {
+              console.error('Live chat streaming error:', error);
+            }
+          }
+        };
+
+        // Start streaming new messages
+        streamNewMessages();
+        
+      } catch (error) {
+        console.error('Chat subscription setup error:', error);
+        if (isSubscribed) {
+          setIsLoading(false);
         }
-      ], { signal });
+      }
+    };
 
-      // Sort by timestamp
-      const sortedEvents = events.sort((a, b) => a.created_at - b.created_at);
-      
-      return sortedEvents.map((event): ChatMessage => ({
-        id: event.id,
-        author: event.pubkey,
-        content: event.content,
-        timestamp: event.created_at * 1000,
-        // TODO: Fetch author metadata for display names
-      }));
-    },
-    refetchInterval: 5000, // Refresh every 5 seconds
-  });
+    setupRealtimeSubscription();
+
+    return () => {
+      isSubscribed = false;
+      abortController?.abort();
+    };
+  }, [nostr]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -79,21 +165,14 @@ export function LiveChat() {
     setMessage('');
 
     // Optimistically update the UI
-    queryClient.setQueryData(['chat-messages', CHANNEL_ID], (old: ChatMessage[] = []) => [
-      ...old,
-      {
-        id: 'temp-' + Date.now(),
-        author: user.pubkey,
-        content: message.trim(),
-        timestamp: Date.now(),
-        authorName: 'You',
-      }
-    ]);
+    const tempMessage: ChatMessage = {
+      id: 'temp-' + Date.now(),
+      author: user.pubkey,
+      content: message.trim(),
+      timestamp: Date.now(),
+    };
 
-    // Refresh messages shortly after
-    setTimeout(() => {
-      queryClient.invalidateQueries({ queryKey: ['chat-messages', CHANNEL_ID] });
-    }, 1000);
+    setMessages(prev => [...prev, tempMessage]);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -111,9 +190,31 @@ export function LiveChat() {
     });
   };
 
-  const truncateKey = (key: string) => {
-    return `${key.slice(0, 8)}...${key.slice(-4)}`;
-  };
+
+  // Component to render individual chat message with profile data
+  function ChatMessageItem({ message, isCurrentUser }: { message: ChatMessage; isCurrentUser: boolean }) {
+    const author = useAuthor(message.author);
+    const metadata = author.data?.metadata;
+    const displayName = isCurrentUser ? 'You' : (metadata?.display_name || metadata?.name || genUserName(message.author));
+    const profileImage = metadata?.picture;
+
+    return (
+      <div className="text-sm flex items-start gap-2">
+        <Avatar className="h-6 w-6 flex-shrink-0">
+          <AvatarImage src={profileImage} alt={displayName} />
+          <AvatarFallback className="text-xs">
+            {displayName.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex-1 min-w-0">
+          <div className="font-medium text-xs text-muted-foreground mb-0.5">
+            {displayName} • {formatTime(message.timestamp)}
+          </div>
+          <div className="break-words">{message.content}</div>
+        </div>
+      </div>
+    );
+  }
 
   if (!isExpanded) {
     return (
@@ -131,11 +232,11 @@ export function LiveChat() {
               <span>{messages.length > 0 ? `${messages.length} messages` : 'No messages yet'}</span>
             </div>
             {messages.slice(-2).map((msg) => (
-              <div key={msg.id} className="text-sm">
-                <div className="font-medium text-xs text-muted-foreground">
-                  {msg.authorName || truncateKey(msg.author)} • {formatTime(msg.timestamp)}
-                </div>
-                <div className="line-clamp-2">{msg.content}</div>
+              <div key={msg.id} className="space-y-1">
+                <ChatMessageItem 
+                  message={msg} 
+                  isCurrentUser={user?.pubkey === msg.author}
+                />
               </div>
             ))}
           </div>
@@ -185,12 +286,11 @@ export function LiveChat() {
             </div>
           ) : (
             messages.map((msg) => (
-              <div key={msg.id} className="text-sm">
-                <div className="font-medium text-xs text-muted-foreground">
-                  {msg.authorName || truncateKey(msg.author)} • {formatTime(msg.timestamp)}
-                </div>
-                <div className="break-words">{msg.content}</div>
-              </div>
+              <ChatMessageItem 
+                key={msg.id}
+                message={msg} 
+                isCurrentUser={user?.pubkey === msg.author}
+              />
             ))
           )}
           <div ref={messagesEndRef} />
