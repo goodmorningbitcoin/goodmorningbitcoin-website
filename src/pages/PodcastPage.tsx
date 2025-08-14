@@ -130,6 +130,7 @@ export default function PodcastPage() {
       title: episode.title,
       artist: show?.title || 'Unknown Show',
       showTitle: show?.title || 'Unknown Show',
+      valueBlock: podcastData?.valueBlock as unknown as Record<string, unknown>,
     });
   };
 
