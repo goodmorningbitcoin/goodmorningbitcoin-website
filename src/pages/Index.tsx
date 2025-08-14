@@ -9,7 +9,6 @@ import { EmailSignup } from '@/components/EmailSignup';
 import { NetworkStats } from '@/components/NetworkStats';
 import { RecentEpisodes } from '@/components/RecentEpisodes';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { useAudioPlayer } from '@/contexts/AudioPlayerContext';
 import { useNowPlaying } from '@/hooks/useNowPlaying';
 import { LiveChat } from '@/components/LiveChat';
@@ -22,13 +21,13 @@ export default function Index() {
     title: 'Good Morning Bitcoin Radio - 24/7 Bitcoin Podcast & News Stream',
     description: 'Listen to Good Morning Bitcoin Radio - the premier 24/7 Bitcoin radio station streaming curated podcasts, breaking news, and community discussions. Join thousands of Bitcoiners worldwide for the voice of Bitcoin, every morning.',
     keywords: 'bitcoin radio, good morning bitcoin, bitcoin podcast, bitcoin news, cryptocurrency radio, bitcoin stream, bitcoin community, bitcoin 247, btc radio, bitcoin audio',
-    'og:title': 'Good Morning Bitcoin Radio - 24/7 Bitcoin Podcast & News Stream',
-    'og:description': 'Listen to Good Morning Bitcoin Radio - the premier 24/7 Bitcoin radio station streaming curated podcasts, breaking news, and community discussions.',
-    'og:type': 'website',
-    'og:site_name': 'Good Morning Bitcoin Radio',
-    'twitter:card': 'summary_large_image',
-    'twitter:title': 'Good Morning Bitcoin Radio - 24/7 Bitcoin Stream',
-    'twitter:description': 'The voice of Bitcoin, every morning. Join thousands listening to 24/7 Bitcoin radio.',
+    ogTitle: 'Good Morning Bitcoin Radio - 24/7 Bitcoin Podcast & News Stream',
+    ogDescription: 'Listen to Good Morning Bitcoin Radio - the premier 24/7 Bitcoin radio station streaming curated podcasts, breaking news, and community discussions.',
+    ogType: 'website',
+    ogSiteName: 'Good Morning Bitcoin Radio',
+    twitterCard: 'summary_large_image',
+    twitterTitle: 'Good Morning Bitcoin Radio - 24/7 Bitcoin Stream',
+    twitterDescription: 'The voice of Bitcoin, every morning. Join thousands listening to 24/7 Bitcoin radio.',
   });
 
   const handlePlayRadio = () => {

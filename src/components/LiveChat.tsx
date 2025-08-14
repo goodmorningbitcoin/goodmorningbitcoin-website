@@ -8,15 +8,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useNostr } from '@nostrify/react';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useNostrPublish } from '@/hooks/useNostrPublish';
-import type { NostrEvent } from '@nostrify/nostrify';
 
 // NIP-28 Channel Chat for Good Morning Bitcoin
 const CHANNEL_ID = 'goodmorningbitcoin';
-const CHANNEL_METADATA = {
-  name: 'Good Morning Bitcoin',
-  about: 'Live chat for Good Morning Bitcoin listeners',
-  picture: '',
-};
 
 interface ChatMessage {
   id: string;

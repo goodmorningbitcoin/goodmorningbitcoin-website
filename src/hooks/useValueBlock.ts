@@ -31,8 +31,9 @@ export function useValueBlock() {
       // For podcast sources, check if value block is already available
       if (currentSource.type === 'podcast') {
         if (currentSource.valueBlock) {
-          console.log('useValueBlock: Found value block in podcast source with', (currentSource.valueBlock as any)?.recipients?.length, 'recipients');
-          return currentSource.valueBlock as ValueBlock;
+          const vb = currentSource.valueBlock as unknown as ValueBlock;
+          console.log('useValueBlock: Found value block in podcast source with', vb?.recipients?.length, 'recipients');
+          return currentSource.valueBlock as unknown as ValueBlock;
         }
         console.log('useValueBlock: No value block in podcast source');
         return null;
@@ -52,7 +53,7 @@ export function useValueBlock() {
 
         console.log('useValueBlock: Radio source, checking possible fields for RSS URL:', possibleFields);
         
-        let podcastXmlUrl = null;
+        let podcastXmlUrl: string | null = null;
         
         for (const field of possibleFields) {
           if (field && typeof field === 'string') {
@@ -63,14 +64,14 @@ export function useValueBlock() {
             const sourceMatch = trimmed.match(/Source:\s*(https?:\/\/[^\s\n]+)/i);
             if (sourceMatch) {
               console.log('useValueBlock: Found Source URL pattern:', sourceMatch[1]);
-              podcastXmlUrl = sourceMatch[1];
+              podcastXmlUrl = sourceMatch[1] as string;
               break;
             }
             
             // Check if it's directly a URL
             if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
               console.log('useValueBlock: Found direct URL:', trimmed);
-              podcastXmlUrl = trimmed;
+              podcastXmlUrl = trimmed as string;
               break;
             }
           }

@@ -13,7 +13,6 @@ import { useValueBlock } from '@/hooks/useValueBlock';
 import { useAudioPlayer } from '@/contexts/AudioPlayerContext';
 import { useWallet } from '@/hooks/useWallet';
 import { useNWC } from '@/hooks/useNWCContext';
-import type { ValueBlock } from '@/lib/podcastXmlParser';
 import {
   Dialog,
   DialogContent,
@@ -38,9 +37,9 @@ export function BoostButton({ className, size = 'default', variant = 'default', 
   const { user } = useCurrentUser();
   const { toast } = useToast();
   const { currentSource } = useAudioPlayer();
-  const { data: valueBlock, isLoading: isLoadingValueBlock, error: valueBlockError } = useValueBlock();
+  const { data: valueBlock, isLoading: isLoadingValueBlock } = useValueBlock();
   const { webln } = useWallet();
-  const { sendPayment, sendKeysend, getActiveConnection } = useNWC();
+  const { sendKeysend, getActiveConnection } = useNWC();
 
   // Debug logging (can be removed later)
   if (valueBlock) {

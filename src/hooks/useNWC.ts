@@ -3,11 +3,20 @@ import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useToast } from '@/hooks/useToast';
 import { LN } from '@getalby/sdk';
 
+// Extend the LN client type to include keysend
+interface ExtendedLNClient extends LN {
+  keysend?: (params: {
+    destination: string;
+    amount: number;
+    tlv_records: Record<string, string>;
+  }) => Promise<{ preimage: string }>;
+}
+
 export interface NWCConnection {
   connectionString: string;
   alias?: string;
   isConnected: boolean;
-  client?: LN;
+  client?: ExtendedLNClient;
 }
 
 export interface NWCInfo {
@@ -189,7 +198,12 @@ export function useNWCInternal() {
         });
       }
 
-      const keysendPromise = client.keysend({
+      const extendedClient = client as ExtendedLNClient;
+      if (!extendedClient.keysend) {
+        throw new Error('Keysend not supported by this connection');
+      }
+      
+      const keysendPromise = extendedClient.keysend({
         destination,
         amount: amount * 1000, // Convert sats to millisats
         tlv_records: tlvRecords,

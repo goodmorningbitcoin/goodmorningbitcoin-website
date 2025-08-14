@@ -27,12 +27,12 @@ export default function Shows() {
     title: 'Bitcoin Podcast Directory - Shows | Good Morning Bitcoin Radio',
     description: 'Discover the best Bitcoin podcasts and shows featured on Good Morning Bitcoin Radio. Stream episodes from top Bitcoin podcasters, educators, and thought leaders in the cryptocurrency space.',
     keywords: 'bitcoin podcasts, bitcoin shows, cryptocurrency podcasts, bitcoin podcast directory, bitcoin radio shows, btc podcasts, bitcoin content, bitcoin education, good morning bitcoin shows',
-    'og:title': 'Bitcoin Podcast Directory - Shows | Good Morning Bitcoin Radio',
-    'og:description': 'Discover the best Bitcoin podcasts and shows. Stream episodes from top Bitcoin podcasters and educators.',
-    'og:type': 'website',
-    'twitter:card': 'summary_large_image',
-    'twitter:title': 'Bitcoin Podcast Directory - Shows',
-    'twitter:description': 'Browse the complete directory of Bitcoin podcasts on Good Morning Bitcoin Radio',
+    ogTitle: 'Bitcoin Podcast Directory - Shows | Good Morning Bitcoin Radio',
+    ogDescription: 'Discover the best Bitcoin podcasts and shows. Stream episodes from top Bitcoin podcasters and educators.',
+    ogType: 'website',
+    twitterCard: 'summary_large_image',
+    twitterTitle: 'Bitcoin Podcast Directory - Shows',
+    twitterDescription: 'Browse the complete directory of Bitcoin podcasts on Good Morning Bitcoin Radio',
   });
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -142,7 +142,7 @@ export default function Shows() {
           title: latestEpisode.title,
           artist: show.title,
           showTitle: show.title,
-          valueBlock: podcastData.valueBlock,
+          valueBlock: podcastData.valueBlock as unknown as Record<string, unknown>,
         });
       } else {
         console.warn('No episodes found in podcast feed for', show.title);

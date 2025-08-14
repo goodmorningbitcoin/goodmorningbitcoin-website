@@ -333,12 +333,12 @@ const SignupDialog: React.FC<SignupDialogProps> = ({ isOpen, onClose, onComplete
                 <div className='flex justify-center items-center space-x-4 mb-3'>
                   <div className='relative'>
                     <UserPlus className='w-12 h-12 text-blue-600' />
-                    <Sparkles className='w-4 h-4 text-yellow-500 absolute -top-1 -right-1 animate-pulse' />
+                    <Sparkles className='w-4 h-4 text-white absolute -top-1 -right-1 animate-pulse' />
                   </div>
                   <Globe className='w-16 h-16 text-blue-700 animate-spin-slow' />
                   <div className='relative'>
                     <FileText className='w-12 h-12 text-blue-600' />
-                    <Sparkles className='w-4 h-4 text-yellow-500 absolute -top-1 -left-1 animate-pulse' style={{animationDelay: '0.3s'}} />
+                    <Sparkles className='w-4 h-4 text-white absolute -top-1 -left-1 animate-pulse' style={{animationDelay: '0.3s'}} />
                   </div>
                 </div>
 
@@ -390,7 +390,7 @@ const SignupDialog: React.FC<SignupDialogProps> = ({ isOpen, onClose, onComplete
                     {[...Array(12)].map((_, i) => (
                       <Sparkles
                         key={i}
-                        className={`absolute w-4 h-4 text-yellow-400 animate-ping`}
+                        className={`absolute w-4 h-4 text-white animate-ping`}
                         style={{
                           left: `${Math.random() * 80 + 10}%`,
                           top: `${Math.random() * 80 + 10}%`,
@@ -407,7 +407,7 @@ const SignupDialog: React.FC<SignupDialogProps> = ({ isOpen, onClose, onComplete
                       <div className='relative'>
                         <Key className='w-20 h-20 text-primary mx-auto animate-pulse' />
                         <div className='absolute inset-0 flex items-center justify-center'>
-                          <div className='w-24 h-24 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin'></div>
+                          <div className='w-24 h-24 border-4 border-white border-t-transparent rounded-full animate-spin'></div>
                         </div>
                       </div>
                       <div className='space-y-2'>
@@ -457,10 +457,10 @@ const SignupDialog: React.FC<SignupDialogProps> = ({ isOpen, onClose, onComplete
               <div className='relative p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/50 dark:to-indigo-950/50 overflow-hidden'>
                 {/* Sparkles */}
                 <div className='absolute inset-0 pointer-events-none'>
-                  <Sparkles className='absolute top-3 left-4 w-3 h-3 text-yellow-400 animate-pulse' style={{animationDelay: '0s'}} />
-                  <Sparkles className='absolute top-6 right-6 w-3 h-3 text-yellow-500 animate-pulse' style={{animationDelay: '0.5s'}} />
-                  <Sparkles className='absolute bottom-4 left-6 w-3 h-3 text-yellow-400 animate-pulse' style={{animationDelay: '1s'}} />
-                  <Sparkles className='absolute bottom-3 right-4 w-3 h-3 text-yellow-500 animate-pulse' style={{animationDelay: '1.5s'}} />
+                  <Sparkles className='absolute top-3 left-4 w-3 h-3 text-white animate-pulse' style={{animationDelay: '0s'}} />
+                  <Sparkles className='absolute top-6 right-6 w-3 h-3 text-white animate-pulse' style={{animationDelay: '0.5s'}} />
+                  <Sparkles className='absolute bottom-4 left-6 w-3 h-3 text-white animate-pulse' style={{animationDelay: '1s'}} />
+                  <Sparkles className='absolute bottom-3 right-4 w-3 h-3 text-white animate-pulse' style={{animationDelay: '1.5s'}} />
                 </div>
 
                 <div className='relative z-10 flex justify-center items-center mb-3'>
@@ -481,7 +481,7 @@ const SignupDialog: React.FC<SignupDialogProps> = ({ isOpen, onClose, onComplete
 
                   {/* Warning */}
                   <div className='relative mx-auto max-w-sm'>
-                    <div className='p-3 bg-gradient-to-r from-amber-100 via-yellow-50 to-amber-100 dark:from-amber-950/40 dark:via-yellow-950/20 dark:to-amber-950/40 rounded-lg border-2 border-amber-300 dark:border-amber-700 shadow-md'>
+                    <div className='p-3 bg-gradient-to-r from-white/90 via-white/70 to-white/90 dark:from-white/10 dark:via-white/5 dark:to-white/10 rounded-lg border-2 border-white/50 dark:border-white/20 shadow-md'>
                       <div className='flex items-center gap-2 mb-1'>
                         <FileText className='w-3 h-3 text-amber-700' />
                         <span className='text-xs font-bold text-amber-800 dark:text-amber-200'>
@@ -627,9 +627,9 @@ const SignupDialog: React.FC<SignupDialogProps> = ({ isOpen, onClose, onComplete
               <div className='relative p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/50 dark:to-indigo-950/50 overflow-hidden'>
                 {/* Sparkles */}
                 <div className='absolute inset-0 pointer-events-none'>
-                  <Sparkles className='absolute top-3 left-4 w-3 h-3 text-yellow-400 animate-pulse' style={{animationDelay: '0s'}} />
-                  <Sparkles className='absolute top-6 right-6 w-3 h-3 text-yellow-500 animate-pulse' style={{animationDelay: '0.5s'}} />
-                  <Sparkles className='absolute bottom-4 left-6 w-3 h-3 text-yellow-400 animate-pulse' style={{animationDelay: '1s'}} />
+                  <Sparkles className='absolute top-3 left-4 w-3 h-3 text-white animate-pulse' style={{animationDelay: '0s'}} />
+                  <Sparkles className='absolute top-6 right-6 w-3 h-3 text-white animate-pulse' style={{animationDelay: '0.5s'}} />
+                  <Sparkles className='absolute bottom-4 left-6 w-3 h-3 text-white animate-pulse' style={{animationDelay: '1s'}} />
                 </div>
 
                 <div className='relative z-10 flex justify-center items-center mb-3'>

@@ -205,7 +205,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose, onLogin, onS
               </p>
               <Button
                 onClick={handleSignupClick}
-                className='w-full rounded-full py-3 text-base font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform transition-all duration-200 hover:scale-105 shadow-lg border-0'
+                className='w-full rounded-full py-3 text-base font-semibold bg-gradient-to-r from-[#e86228] to-[#f07638] hover:from-[#d55520] hover:to-[#e86228] text-white transform transition-all duration-200 hover:scale-105 shadow-lg border-0'
               >
                 <UserPlus className='w-4 h-4 mr-2' />
                 <span>Sign Up</span>
@@ -255,7 +255,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose, onLogin, onS
                 </p>
                 <div className="flex justify-center">
                   <Button
-                    className='w-full rounded-full py-4'
+                    className='w-full rounded-full py-4 bg-[#e86228] hover:bg-[#d55520] text-white font-medium'
                     onClick={handleExtensionLogin}
                     disabled={isLoading}
                   >
@@ -291,7 +291,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose, onLogin, onS
                 </div>
 
                 <Button
-                  className='w-full rounded-full py-3'
+                  className='w-full rounded-full py-3 bg-[#e86228] hover:bg-[#d55520] text-white font-medium'
                   onClick={handleKeyLogin}
                   disabled={isLoading || !nsec.trim()}
                 >
