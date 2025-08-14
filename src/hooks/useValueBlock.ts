@@ -21,21 +21,21 @@ export function useValueBlock() {
     queryKey: ['valueBlock', currentSource?.type, currentSource?.url, nowPlaying?.now_playing.song.text],
     queryFn: async ({ signal }): Promise<ValueBlock | null> => {
       // Debug logging
-      console.log('useValueBlock: Checking for value block, source type:', currentSource?.type);
+      // console.log('useValueBlock: Checking for value block, source type:', currentSource?.type);
 
       if (!currentSource) {
-        console.log('useValueBlock: No current source');
+        // console.log('useValueBlock: No current source');
         return null;
       }
 
       // For podcast sources, check if value block is already available
       if (currentSource.type === 'podcast') {
         if (currentSource.valueBlock) {
-          const vb = currentSource.valueBlock as unknown as ValueBlock;
-          console.log('useValueBlock: Found value block in podcast source with', vb?.recipients?.length, 'recipients');
+          // const vb = currentSource.valueBlock as unknown as ValueBlock;
+          // console.log('useValueBlock: Found value block in podcast source with', vb?.recipients?.length, 'recipients');
           return currentSource.valueBlock as unknown as ValueBlock;
         }
-        console.log('useValueBlock: No value block in podcast source');
+        // console.log('useValueBlock: No value block in podcast source');
         return null;
       }
 
@@ -51,26 +51,26 @@ export function useValueBlock() {
           nowPlaying?.now_playing.song.custom_fields?.feed
         ];
 
-        console.log('useValueBlock: Radio source, checking possible fields for RSS URL:', possibleFields);
+        // console.log('useValueBlock: Radio source, checking possible fields for RSS URL:', possibleFields);
         
         let podcastXmlUrl: string | null = null;
         
         for (const field of possibleFields) {
           if (field && typeof field === 'string') {
             const trimmed = field.trim();
-            console.log('useValueBlock: Checking field:', trimmed);
+            // console.log('useValueBlock: Checking field:', trimmed);
             
             // Check if it contains a Source: URL pattern
             const sourceMatch = trimmed.match(/Source:\s*(https?:\/\/[^\s\n]+)/i);
             if (sourceMatch) {
-              console.log('useValueBlock: Found Source URL pattern:', sourceMatch[1]);
+              // console.log('useValueBlock: Found Source URL pattern:', sourceMatch[1]);
               podcastXmlUrl = sourceMatch[1] as string;
               break;
             }
             
             // Check if it's directly a URL
             if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
-              console.log('useValueBlock: Found direct URL:', trimmed);
+              // console.log('useValueBlock: Found direct URL:', trimmed);
               podcastXmlUrl = trimmed as string;
               break;
             }
@@ -78,11 +78,11 @@ export function useValueBlock() {
         }
 
         if (!podcastXmlUrl) {
-          console.log('useValueBlock: No RSS URL found in any field');
+          // console.log('useValueBlock: No RSS URL found in any field');
           return null;
         }
         
-        console.log('useValueBlock: Using RSS URL:', podcastXmlUrl);
+        // console.log('useValueBlock: Using RSS URL:', podcastXmlUrl);
 
         try {
           // Fetch the podcast RSS feed
@@ -104,10 +104,10 @@ export function useValueBlock() {
           return null;
         }
       } else {
-        console.log('useValueBlock: Radio source but no RSS URL found in any field');
+        // console.log('useValueBlock: Radio source but no RSS URL found in any field');
       }
 
-      console.log('useValueBlock: No value block found, returning null');
+      // console.log('useValueBlock: No value block found, returning null');
       return null;
     },
     enabled: !!currentSource && (

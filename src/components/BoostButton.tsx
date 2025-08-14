@@ -42,9 +42,9 @@ export function BoostButton({ className, size = 'default', variant = 'default', 
   const { sendKeysend, getActiveConnection } = useNWC();
 
   // Debug logging (can be removed later)
-  if (valueBlock) {
-    console.log('BoostButton: Found value block with', valueBlock.recipients?.length, 'recipients');
-  }
+  // if (valueBlock) {
+  //   console.log('BoostButton: Found value block with', valueBlock.recipients?.length, 'recipients');
+  // }
 
   if (!valueBlock) {
     // Show a debug button when no value block to help troubleshoot

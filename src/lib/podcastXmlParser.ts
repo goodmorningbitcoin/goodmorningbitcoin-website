@@ -138,13 +138,13 @@ export function parsePodcastXml(xmlString: string): PodcastMetadata | null {
     const valueTag = channel.querySelector('podcast\\:value, value');
     let valueBlock: ValueBlock | undefined;
 
-    console.log('XML Parser: Looking for value tag, found:', !!valueTag);
+    // console.log('XML Parser: Looking for value tag, found:', !!valueTag);
     if (valueTag) {
-      console.log('XML Parser: Found value tag with attributes:', {
-        type: valueTag.getAttribute('type'),
-        method: valueTag.getAttribute('method'),
-        suggested: valueTag.getAttribute('suggested')
-      });
+      // console.log('XML Parser: Found value tag with attributes:', {
+      //   type: valueTag.getAttribute('type'),
+      //   method: valueTag.getAttribute('method'),
+      //   suggested: valueTag.getAttribute('suggested')
+      // });
       const type = valueTag.getAttribute('type') || 'lightning';
       const method = valueTag.getAttribute('method') || 'keysend';
       const suggested = valueTag.getAttribute('suggested');
@@ -152,7 +152,7 @@ export function parsePodcastXml(xmlString: string): PodcastMetadata | null {
       const recipients: ValueSplit[] = [];
       const valueRecipients = valueTag.querySelectorAll('podcast\\:valueRecipient, valueRecipient');
 
-      console.log('XML Parser: Found', valueRecipients.length, 'value recipients');
+      // console.log('XML Parser: Found', valueRecipients.length, 'value recipients');
       valueRecipients.forEach(recipient => {
         const address = recipient.getAttribute('address');
         const split = recipient.getAttribute('split');
@@ -187,9 +187,9 @@ export function parsePodcastXml(xmlString: string): PodcastMetadata | null {
           suggested: suggested ? parseInt(suggested, 10) : undefined,
           recipients,
         };
-        console.log('XML Parser: Created value block with', recipients.length, 'recipients:', valueBlock);
+        // console.log('XML Parser: Created value block with', recipients.length, 'recipients:', valueBlock);
       } else {
-        console.log('XML Parser: No recipients found, no value block created');
+        // console.log('XML Parser: No recipients found, no value block created');
       }
     }
 
