@@ -1,5 +1,6 @@
 import { useSeoMeta } from '@unhead/react';
 import { Play, Radio, Music, Users } from 'lucide-react';
+import { WebSiteSchema } from '@/components/WebSiteSchema';
 import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
 import { FeaturedShow } from '@/components/FeaturedShow';
@@ -47,6 +48,9 @@ export default function Index() {
 
   return (
     <Layout>
+      {/* WebSite Schema for homepage */}
+      <WebSiteSchema />
+      
       <Header />
       
       {/* Hero/Now Playing Section */}

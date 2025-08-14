@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { useSeoMeta } from '@unhead/react';
+import { useSeoMeta, useHead } from '@unhead/react';
 import { Play, Calendar, Clock, ExternalLink, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { parsePodcastXml } from '@/lib/podcastXmlParser';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
+import { generateBreadcrumbSchema } from '@/lib/seoUtils';
 import showsData from '../../public/shows.json';
 
 interface Show {
@@ -54,9 +55,52 @@ export default function PodcastPage() {
     retry: 1,
   });
 
+  // Enhanced SEO metadata that updates with dynamic content
   useSeoMeta({
-    title: show ? `${show.title} - Good Morning Bitcoin` : 'Podcast - Good Morning Bitcoin',
-    description: show?.description || 'Listen to Bitcoin podcast episodes',
+    title: show 
+      ? `${show.title} - Bitcoin Podcast Episodes | Good Morning Bitcoin Radio`
+      : 'Bitcoin Podcast - Good Morning Bitcoin Radio',
+    description: show
+      ? `Listen to ${show.title} episodes on Good Morning Bitcoin Radio. ${show.description} Stream Bitcoin podcasts with Lightning support and zap your favorite creators.`
+      : 'Listen to Bitcoin podcast episodes on Good Morning Bitcoin Radio',
+    keywords: show
+      ? `${show.title}, bitcoin podcast, ${show.title.toLowerCase()}, bitcoin episodes, cryptocurrency podcast, bitcoin radio, lightning zaps, ${show.title} episodes`
+      : 'bitcoin podcast, cryptocurrency podcast, bitcoin radio',
+    
+    // Open Graph tags
+    ogTitle: show 
+      ? `${show.title} - Bitcoin Podcast Episodes`
+      : 'Bitcoin Podcast Episodes',
+    ogDescription: show
+      ? `Listen to ${show.title} on Good Morning Bitcoin Radio. ${show.description.substring(0, 160)}...`
+      : 'Listen to Bitcoin podcast episodes',
+    ogType: 'website',
+    ogSiteName: 'Good Morning Bitcoin Radio',
+    ogUrl: `https://goodmorningbitcoin.com/podcast/${slug}`,
+    ogImage: podcastData?.image || 'https://goodmorningbitcoin.com/og-podcast.jpg', // Fallback OG image
+    
+    // Twitter Card tags
+    twitterCard: 'summary_large_image',
+    twitterTitle: show 
+      ? `${show.title} - Bitcoin Podcast Episodes`
+      : 'Bitcoin Podcast Episodes',
+    twitterDescription: show
+      ? `Listen to ${show.title} episodes. ${show.description.substring(0, 120)}...`
+      : 'Listen to Bitcoin podcast episodes',
+    twitterImage: podcastData?.image || 'https://goodmorningbitcoin.com/twitter-podcast.jpg',
+    
+    // Additional SEO tags  
+    robots: 'index,follow',
+  });
+
+  // Add canonical link
+  useHead({
+    link: [
+      {
+        rel: 'canonical',
+        href: `https://goodmorningbitcoin.com/podcast/${slug}`
+      }
+    ]
   });
 
   const playEpisode = async (episode: Episode) => {
@@ -217,10 +261,85 @@ export default function PodcastPage() {
     });
   };
 
+  // Generate JSON-LD structured data for SEO
+  const generateStructuredData = () => {
+    if (!show || !podcastData) return null;
+
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "PodcastSeries",
+      "name": show.title,
+      "description": podcastData.description || show.description,
+      "url": `https://goodmorningbitcoin.com/podcast/${slug}`,
+      "image": podcastData.image,
+      "author": {
+        "@type": "Person",
+        "name": show.title
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Good Morning Bitcoin Radio",
+        "url": "https://goodmorningbitcoin.com"
+      },
+      "genre": ["Bitcoin", "Cryptocurrency", "Technology", "Finance"],
+      "inLanguage": "en-US",
+      "associatedMedia": podcastData.episodes?.slice(0, 5).map((episode, index) => ({
+        "@type": "PodcastEpisode",
+        "name": episode.title,
+        "description": episode.description,
+        "url": `https://goodmorningbitcoin.com/podcast/${slug}#episode-${index}`,
+        "datePublished": episode.pubDate,
+        "duration": episode.duration,
+        "associatedMedia": {
+          "@type": "AudioObject",
+          "contentUrl": episode.audioUrl,
+          "encodingFormat": "audio/mpeg"
+        },
+        "partOfSeries": {
+          "@type": "PodcastSeries",
+          "name": show.title,
+          "url": `https://goodmorningbitcoin.com/podcast/${slug}`
+        }
+      })),
+      "mainEntity": {
+        "@type": "WebPage",
+        "name": `${show.title} - Bitcoin Podcast Episodes`,
+        "url": `https://goodmorningbitcoin.com/podcast/${slug}`,
+        "description": `Listen to ${show.title} episodes on Good Morning Bitcoin Radio`,
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Good Morning Bitcoin Radio",
+          "url": "https://goodmorningbitcoin.com"
+        }
+      }
+    };
+
+    return structuredData;
+  };
+
   return (
     <Layout>
       <Header />
-      <div className="max-w-4xl mx-auto py-10 px-4 space-y-6">
+      
+      {/* JSON-LD Structured Data */}
+      {show && podcastData && (
+        <>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(generateStructuredData(), null, 2)
+            }}
+          />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(generateBreadcrumbSchema(show.title, slug || ''), null, 2)
+            }}
+          />
+        </>
+      )}
+      
+      <div className="max-w-4xl mx-auto py-10 px-4 space-y-6" itemScope itemType="https://schema.org/PodcastSeries">
         {/* Podcast Header */}
         <Card>
           <CardHeader>
@@ -228,8 +347,10 @@ export default function PodcastPage() {
               {podcastData.image ? (
                 <img
                   src={podcastData.image}
-                  alt={show.title}
+                  alt={`${show.title} podcast artwork`}
                   className="w-32 h-32 object-cover rounded-lg flex-shrink-0"
+                  itemProp="image"
+                  loading="eager"
                 />
               ) : (
                 <div className="w-32 h-32 bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900 dark:to-orange-800 rounded-lg flex items-center justify-center">
@@ -247,10 +368,24 @@ export default function PodcastPage() {
                     </Link>
                   </Button>
                 </div>
-                <CardTitle className="text-2xl mb-3">{show.title}</CardTitle>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                <CardTitle className="text-2xl mb-3" itemProp="name">
+                  <h1 className="m-0 p-0 text-inherit font-inherit">{show.title}</h1>
+                </CardTitle>
+                <p className="text-muted-foreground text-sm leading-relaxed mb-4" itemProp="description">
                   {podcastData.description || show.description}
                 </p>
+                
+                {/* Hidden SEO metadata */}
+                <div className="sr-only">
+                  <meta itemProp="url" content={`https://goodmorningbitcoin.com/podcast/${slug}`} />
+                  <meta itemProp="genre" content="Bitcoin" />
+                  <meta itemProp="genre" content="Cryptocurrency" />
+                  <meta itemProp="inLanguage" content="en-US" />
+                  <span itemProp="publisher" itemScope itemType="https://schema.org/Organization">
+                    <meta itemProp="name" content="Good Morning Bitcoin Radio" />
+                    <meta itemProp="url" content="https://goodmorningbitcoin.com" />
+                  </span>
+                </div>
                 <div className="flex gap-2">
                   {show.fountainlink && (
                     <Button asChild size="sm" variant="outline">
@@ -278,9 +413,15 @@ export default function PodcastPage() {
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Episodes</h2>
           {podcastData.episodes && podcastData.episodes.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-3" itemProp="episode">
               {podcastData.episodes.map((episode, index) => (
-                <Card key={index} className="hover:shadow-md transition-shadow">
+                <Card 
+                  key={index} 
+                  className="hover:shadow-md transition-shadow" 
+                  itemScope 
+                  itemType="https://schema.org/PodcastEpisode"
+                  id={`episode-${index}`}
+                >
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <Button
@@ -288,27 +429,45 @@ export default function PodcastPage() {
                         variant="default"
                         onClick={() => playEpisode(episode)}
                         className="flex-shrink-0 bg-gmb-orange hover:bg-[#d55520]"
+                        aria-label={`Play ${episode.title}`}
                       >
                         <Play className="h-4 w-4" />
                       </Button>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-base mb-2 line-clamp-2">
+                        <h3 className="font-semibold text-base mb-2 line-clamp-2" itemProp="name">
                           {episode.title}
                         </h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                        <p className="text-sm text-muted-foreground line-clamp-2 mb-3" itemProp="description">
                           {episode.description}
                         </p>
                         <div className="flex items-center gap-4 text-xs text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
-                            <span>{formatDate(episode.pubDate)}</span>
+                            <time itemProp="datePublished" dateTime={new Date(episode.pubDate).toISOString()}>
+                              {formatDate(episode.pubDate)}
+                            </time>
                           </div>
                           {episode.duration && (
                             <div className="flex items-center gap-1">
                               <Clock className="h-3 w-3" />
-                              <span>{episode.duration}</span>
+                              <span itemProp="duration" content={episode.duration}>
+                                {episode.duration}
+                              </span>
                             </div>
                           )}
+                        </div>
+                        
+                        {/* Hidden episode metadata */}
+                        <div className="sr-only">
+                          <meta itemProp="url" content={`https://goodmorningbitcoin.com/podcast/${slug}#episode-${index}`} />
+                          <span itemProp="associatedMedia" itemScope itemType="https://schema.org/AudioObject">
+                            <meta itemProp="contentUrl" content={episode.audioUrl} />
+                            <meta itemProp="encodingFormat" content="audio/mpeg" />
+                          </span>
+                          <span itemProp="partOfSeries" itemScope itemType="https://schema.org/PodcastSeries">
+                            <meta itemProp="name" content={show.title} />
+                            <meta itemProp="url" content={`https://goodmorningbitcoin.com/podcast/${slug}`} />
+                          </span>
                         </div>
                       </div>
                     </div>

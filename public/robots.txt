@@ -1,0 +1,78 @@
+# Robots.txt for Good Morning Bitcoin Radio
+# https://goodmorningbitcoin.com
+
+User-agent: *
+Allow: /
+
+# Allow all podcast pages
+Allow: /podcast/
+Allow: /shows
+
+# Important pages for crawlers
+Allow: /about
+Allow: /community
+
+# Sitemap location
+Sitemap: https://goodmorningbitcoin.com/sitemap.xml
+
+# Crawl delay to be respectful (1 second)
+Crawl-delay: 1
+
+# Block common bot files/directories that don't exist
+Disallow: /admin
+Disallow: /wp-admin
+Disallow: /wp-login
+Disallow: /.git
+Disallow: /node_modules
+Disallow: /src
+Disallow: /dist
+Disallow: /.env
+Disallow: /package.json
+
+# Block irrelevant file types
+Disallow: /*.json$
+Disallow: /*.xml$ 
+Disallow: /*.txt$
+Disallow: /*.log$
+
+# Allow CSS, JS, and images for proper rendering
+Allow: /assets/
+Allow: /*.css
+Allow: /*.js  
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.gif
+Allow: /*.svg
+Allow: /*.ico
+Allow: /*.woff
+Allow: /*.woff2
+
+# Special handling for social media crawlers
+User-agent: facebookexternalhit
+Allow: /
+Crawl-delay: 0
+
+User-agent: Twitterbot  
+Allow: /
+Crawl-delay: 0
+
+User-agent: LinkedInBot
+Allow: /
+Crawl-delay: 0
+
+# Block AI training crawlers (optional - you can remove if you want AI training)
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /

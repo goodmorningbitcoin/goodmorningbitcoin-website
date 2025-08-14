@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { CompactAudioPlayer } from '@/components/CompactAudioPlayer';
+import { OrganizationSchema } from '@/components/OrganizationSchema';
 import { cn } from '@/lib/utils';
 
 interface LayoutProps {
@@ -10,6 +11,9 @@ interface LayoutProps {
 export function Layout({ children, className }: LayoutProps) {
   return (
     <div className="min-h-screen">
+      {/* Global Organization Schema for E-A-T */}
+      <OrganizationSchema />
+      
       {/* Main content with bottom padding to prevent player overlap */}
       <main className={cn("pb-20", className)}>
         {children}

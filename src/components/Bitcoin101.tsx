@@ -16,8 +16,8 @@ export function Bitcoin101() {
           Learn about Bitcoin basics and get started on your journey to understanding the future of money.
         </p>
         <Button asChild className="w-full bg-gmb-orange hover:bg-[#d55520]">
-          <a href="https://bitcoin101.goodmorningbitcoin.com" target="_blank" rel="noopener noreferrer">
-            Get Started
+          <a href="https://learnmeabitcoin.com/" target="_blank" rel="noopener noreferrer">
+            Learn Bitcoin
           </a>
         </Button>
       </CardContent>
