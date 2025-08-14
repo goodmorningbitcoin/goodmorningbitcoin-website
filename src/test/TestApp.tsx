@@ -1,10 +1,12 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createHead, UnheadProvider } from '@unhead/react/client';
 import { BrowserRouter } from 'react-router-dom';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { NostrLoginProvider } from '@nostrify/react/login';
 import NostrProvider from '@/components/NostrProvider';
 import { AppProvider } from '@/components/AppProvider';
 import { NWCProvider } from '@/contexts/NWCContext';
+import { AudioPlayerProvider } from '@/contexts/AudioPlayerContext';
 import { AppConfig } from '@/contexts/AppContext';
 
 interface TestAppProps {
@@ -33,9 +35,13 @@ export function TestApp({ children }: TestAppProps) {
           <NostrLoginProvider storageKey='test-login'>
             <NostrProvider>
               <NWCProvider>
-                <BrowserRouter>
-                  {children}
-                </BrowserRouter>
+                <AudioPlayerProvider>
+                  <TooltipProvider>
+                    <BrowserRouter>
+                      {children}
+                    </BrowserRouter>
+                  </TooltipProvider>
+                </AudioPlayerProvider>
               </NWCProvider>
             </NostrProvider>
           </NostrLoginProvider>

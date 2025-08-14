@@ -209,14 +209,35 @@ export function CompactAudioPlayer() {
                 </Button>
               )}
             </div>
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => setIsExpanded(false)}
-              className="h-8 w-8"
-            >
-              <ChevronDown className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              {/* Mobile: Listener count and boost button next to collapse */}
+              <div className="sm:hidden flex items-center gap-2">
+                {/* Listener count (mobile only) */}
+                {isRadio && nowPlaying && (
+                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                    <Users className="h-4 w-4" />
+                    <span>{nowPlaying.listeners.current}</span>
+                  </div>
+                )}
+                
+                {/* Boost button (mobile only) */}
+                <BoostButton
+                  size="icon"
+                  variant="ghost"
+                  iconOnly
+                  className="h-8 w-8"
+                />
+              </div>
+              
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => setIsExpanded(false)}
+                className="h-8 w-8"
+              >
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -272,21 +293,20 @@ export function CompactAudioPlayer() {
                   
                   {/* Right side controls */}
                   <div className="flex items-center gap-3 flex-shrink-0">
-                    {/* Listener count */}
+                    {/* Listener count (desktop only - mobile shows in header) */}
                     {isRadio && nowPlaying && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
                         <Users className="h-4 w-4" />
-                        <span className="hidden sm:inline">{nowPlaying.listeners.current} listening</span>
-                        <span className="sm:hidden">{nowPlaying.listeners.current}</span>
+                        <span>{nowPlaying.listeners.current} listening</span>
                       </div>
                     )}
                     
-                    {/* Boost button */}
+                    {/* Boost button (desktop only - mobile shows in header) */}
                     <BoostButton
                       size="icon"
                       variant="ghost"
                       iconOnly
-                      className="h-8 w-8"
+                      className="hidden sm:flex items-center justify-center h-8 w-8"
                     />
                     
                     {/* Volume Control */}
