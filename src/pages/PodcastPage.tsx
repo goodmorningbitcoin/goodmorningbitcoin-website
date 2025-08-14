@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { parsePodcastXml } from '@/lib/podcastXmlParser';
-import { useAudioPlayer } from '@/contexts/AudioPlayerContext';
+import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import showsData from '../../public/shows.json';
 
 interface Show {

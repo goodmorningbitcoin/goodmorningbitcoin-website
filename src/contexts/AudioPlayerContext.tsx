@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useRef, useEffect, ReactNode } from 'react';
+import { createContext, useState, useRef, useEffect, ReactNode } from 'react';
 
 export type AudioSource = 
   | { type: 'radio'; url: string; title: string; artist: string; }
@@ -30,7 +30,7 @@ interface AudioPlayerContextValue {
   audioRef: React.RefObject<HTMLAudioElement>;
 }
 
-const AudioPlayerContext = createContext<AudioPlayerContextValue | undefined>(undefined);
+export const AudioPlayerContext = createContext<AudioPlayerContextValue | undefined>(undefined);
 
 export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -174,10 +174,3 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useAudioPlayer() {
-  const context = useContext(AudioPlayerContext);
-  if (!context) {
-    throw new Error('useAudioPlayer must be used within AudioPlayerProvider');
-  }
-  return context;
-}

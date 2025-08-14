@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
 import { useNowPlaying } from '@/hooks/useNowPlaying';
-import { useAudioPlayer } from '@/contexts/AudioPlayerContext';
+import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { cn } from '@/lib/utils';
 
 export function RadioPlayer({ className }: { className?: string }) {

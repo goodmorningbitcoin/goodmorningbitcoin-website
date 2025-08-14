@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Clock, Calendar, Radio, Play } from 'lucide-react';
 import { useNowPlaying } from '@/hooks/useNowPlaying';
-import { useAudioPlayer } from '@/contexts/AudioPlayerContext';
+import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import showsData from '../../public/shows.json';
 
 interface Show {

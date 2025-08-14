@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useAudioPlayer } from '@/contexts/AudioPlayerContext';
+import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { useNowPlaying } from '@/hooks/useNowPlaying';
 import { BoostButton } from '@/components/BoostButton';
 
@@ -276,15 +276,17 @@ export function CompactAudioPlayer() {
                     {isRadio && nowPlaying && (
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Users className="h-4 w-4" />
-                        <span>{nowPlaying.listeners.current} listening</span>
+                        <span className="hidden sm:inline">{nowPlaying.listeners.current} listening</span>
+                        <span className="sm:hidden">{nowPlaying.listeners.current}</span>
                       </div>
                     )}
                     
                     {/* Boost button */}
                     <BoostButton
-                      size="sm"
-                      variant="outline"
-                      className="h-8"
+                      size="icon"
+                      variant="ghost"
+                      iconOnly
+                      className="h-8 w-8"
                     />
                     
                     {/* Volume Control */}

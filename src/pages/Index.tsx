@@ -9,7 +9,7 @@ import { EmailSignup } from '@/components/EmailSignup';
 import { NetworkStats } from '@/components/NetworkStats';
 import { RecentEpisodes } from '@/components/RecentEpisodes';
 import { Button } from '@/components/ui/button';
-import { useAudioPlayer } from '@/contexts/AudioPlayerContext';
+import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { useNowPlaying } from '@/hooks/useNowPlaying';
 import { LiveChat } from '@/components/LiveChat';
 

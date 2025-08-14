@@ -64,10 +64,10 @@ export function useStationHistory(limit: number = 10) {
   return useQuery({
     queryKey: ['station-history', limit],
     queryFn: async () => {
-      console.log('Fetching station history via nowplaying endpoint...');
+      // console.log('Fetching station history via nowplaying endpoint...');
       // Use the main nowplaying endpoint which includes song_history
       const response = await fetch(`https://radio.goodmorningbitcoin.com/api/nowplaying`);
-      console.log('Nowplaying response status:', response.status);
+      // console.log('Nowplaying response status:', response.status);
       
       if (!response.ok) {
         const errorText = await response.text();
@@ -76,16 +76,16 @@ export function useStationHistory(limit: number = 10) {
       }
       
       const data = await response.json();
-      console.log('Nowplaying data structure:', data);
+      // console.log('Nowplaying data structure:', data);
       
       // The nowplaying endpoint returns an array of stations
       // For station 1, we need to get the first station's data
       const stationData = Array.isArray(data) ? data[0] : data;
-      console.log('Station data:', stationData);
+      // console.log('Station data:', stationData);
       
       // Extract song history from the station data
       if (stationData && stationData.song_history && Array.isArray(stationData.song_history)) {
-        console.log('Using real song history:', stationData.song_history);
+        // console.log('Using real song history:', stationData.song_history);
         
         // Convert song_history format to match the expected history format from the API docs
         const history = stationData.song_history.slice(0, limit).map((historyItem: RawHistoryItem, index: number) => ({
@@ -116,7 +116,7 @@ export function useStationHistory(limit: number = 10) {
         return history;
       }
       
-      console.log('No song_history found, returning empty array');
+      // console.log('No song_history found, returning empty array');
       return [];
     },
     staleTime: 60000, // 1 minute
