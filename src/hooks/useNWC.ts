@@ -92,7 +92,7 @@ export function useNWCInternal() {
         ...prev,
         [parsed.connectionString]: {
           alias: connection.alias,
-          methods: ['pay_invoice'],
+          methods: ['pay_invoice', 'keysend'],
         },
       }));
 
@@ -156,6 +156,74 @@ export function useNWCInternal() {
     return found || null;
   }, [activeConnection, connections, setActiveConnection]);
 
+  // Send keysend payment using the SDK
+  const sendKeysend = useCallback(async (
+    connection: NWCConnection,
+    destination: string,
+    amount: number,
+    customRecords?: Record<string, string>
+  ): Promise<{ preimage: string }> => {
+    if (!connection.connectionString) {
+      throw new Error('Invalid connection: missing connection string');
+    }
+
+    let client: LN;
+    try {
+      client = new LN(connection.connectionString);
+    } catch (error) {
+      console.error('Failed to create NWC client:', error);
+      throw new Error(`Failed to create NWC client: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+
+    try {
+      let timeoutId: NodeJS.Timeout | undefined;
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error('Keysend timeout after 15 seconds')), 15000);
+      });
+
+      // Convert custom records to the format expected by the SDK
+      const tlvRecords: Record<string, string> = {};
+      if (customRecords) {
+        Object.entries(customRecords).forEach(([key, value]) => {
+          tlvRecords[key] = value;
+        });
+      }
+
+      const keysendPromise = client.keysend({
+        destination,
+        amount: amount * 1000, // Convert sats to millisats
+        tlv_records: tlvRecords,
+      });
+
+      try {
+        const response = await Promise.race([keysendPromise, timeoutPromise]) as { preimage: string };
+        if (timeoutId) clearTimeout(timeoutId);
+        return response;
+      } catch (error) {
+        if (timeoutId) clearTimeout(timeoutId);
+        throw error;
+      }
+    } catch (error) {
+      console.error('NWC keysend failed:', error);
+
+      if (error instanceof Error) {
+        if (error.message.includes('timeout')) {
+          throw new Error('Keysend timed out. Please try again.');
+        } else if (error.message.includes('insufficient')) {
+          throw new Error('Insufficient balance in connected wallet.');
+        } else if (error.message.includes('invalid')) {
+          throw new Error('Invalid destination or connection. Please check your wallet.');
+        } else if (error.message.includes('not supported') || error.message.includes('unsupported')) {
+          throw new Error('Keysend not supported by this wallet.');
+        } else {
+          throw new Error(`Keysend failed: ${error.message}`);
+        }
+      }
+
+      throw new Error('Keysend failed with unknown error');
+    }
+  }, []);
+
   // Send payment using the SDK
   const sendPayment = useCallback(async (
     connection: NWCConnection,
@@ -217,5 +285,6 @@ export function useNWCInternal() {
     setActiveConnection,
     getActiveConnection,
     sendPayment,
+    sendKeysend,
   };
 }

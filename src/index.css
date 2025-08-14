@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 254 253 252; /* #fefdfc - matches current site */
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -13,7 +13,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 20 91% 48%; /* #e86228 - GMB orange */
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -97,5 +97,19 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .gmb-orange {
+    @apply text-[#e86228];
+  }
+  
+  .bg-gmb-orange {
+    @apply bg-[#e86228];
+  }
+  
+  .text-xl-bold {
+    @apply text-xl font-bold;
   }
 }
