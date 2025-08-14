@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Send, MessageCircle, Users } from 'lucide-react';
+import { Send, MessageCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,7 +23,6 @@ interface ChatMessage {
 
 export function LiveChat() {
   const [message, setMessage] = useState('');
-  const [isExpanded, setIsExpanded] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { nostr } = useNostr();
   const { user } = useCurrentUser();
@@ -144,10 +143,10 @@ export function LiveChat() {
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    if (messagesEndRef.current && isExpanded) {
+    if (messagesEndRef.current && messagesEndRef.current.scrollIntoView) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, isExpanded]);
+  }, [messages]);
 
   const handleSendMessage = () => {
     if (!message.trim() || !user) return;
@@ -216,58 +215,13 @@ export function LiveChat() {
     );
   }
 
-  if (!isExpanded) {
-    return (
-      <Card className="h-full">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <MessageCircle className="h-5 w-5" />
-            Live Chat
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3 mb-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Users className="h-4 w-4" />
-              <span>{messages.length > 0 ? `${messages.length} messages` : 'No messages yet'}</span>
-            </div>
-            {messages.slice(-2).map((msg) => (
-              <div key={msg.id} className="space-y-1">
-                <ChatMessageItem 
-                  message={msg} 
-                  isCurrentUser={user?.pubkey === msg.author}
-                />
-              </div>
-            ))}
-          </div>
-          <Button 
-            onClick={() => setIsExpanded(true)}
-            className="w-full"
-            variant="outline"
-          >
-            Join Chat
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <MessageCircle className="h-5 w-5" />
-            Live Chat
-          </CardTitle>
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={() => setIsExpanded(false)}
-          >
-            Minimize
-          </Button>
-        </div>
+        <CardTitle className="text-lg flex items-center gap-2">
+          <MessageCircle className="h-5 w-5" />
+          Live Chat
+        </CardTitle>
       </CardHeader>
       
       <CardContent className="flex-1 flex flex-col p-3">
