@@ -264,6 +264,14 @@
         "podcastXml": "https://anchor.fm/s/d48d2ca8/podcast/rss"
     },
     {
+        "title": "Trust Revolution",
+        "description": "Trust is unraveling—institutions falter, headlines deceive, and centralized power’s grip is weakening. A new reality’s emerging: pioneers building on open protocols and technologies are rewriting the rules. Trust Revolution digs in with unfiltered conversations—tech rebels slashing data grabs, whistleblowers exposing flaws, officials rejecting overreach, and contrarians defending the old guard. From cypherpunks to business leaders, we unpack how economies and societies are shifting.",
+        "fountainlink": "https://fountain.fm/show/Mk0fJte5vrfiDQ5RyCZd",
+        "xlink": "",
+        "nostr": "npub1clk6vc9xhjp8q5cws262wuf2eh4zuvwupft03hy4ttqqnm7e0jrq3upup9",
+        "podcastXml": "https://feeds.fountain.fm/OIYZniSDb9jd3Pb78CpF"
+    },
+    {
         "title": "Ungovernable Misfits",
         "description": "Sick of being spied on, stolen from, and lied to? Ungovernable Misfits aim to ignite a rebellious spark in every listener. We explore ways to regain privacy and freedom using Bitcoin and open source software. Freedoms are not granted, they are taken and defended. We are rebels with a cause. Join us and become Ungovernable.",
         "fountainlink": "https://www.fountain.fm/show/sbfNnARG7zj3nL6Xfill",
