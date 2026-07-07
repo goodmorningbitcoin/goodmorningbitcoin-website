@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useEffect, useRef, useState } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -24,12 +25,16 @@ interface Rss2JsonResponse {
   }>;
 }
 
-// Fixed number of articles to show. No dynamic height calculation —
-// that caused render loops on mobile (scroll → resize → recalculate →
-// count change → layout shift → repeat).
-const VISIBLE_COUNT = 6;
+// Desktop: dynamically fit items to match adjacent column height.
+// Mobile: fixed count to avoid scroll feedback loops (measure → layout
+// shift → resize → re-measure → repeat).
+const MOBILE_COUNT = 6;
 
 export function BitcoinNewsBrief() {
+  const [visibleCount, setVisibleCount] = useState(MOBILE_COUNT);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
   const { data: posts, isLoading, error } = useQuery({
     queryKey: ['bitcoin-news'],
     queryFn: async () => {
@@ -49,6 +54,47 @@ export function BitcoinNewsBrief() {
     retry: 2,
   });
 
+  // Dynamic item count on desktop only (md breakpoint = 768px).
+  // Mobile uses the fixed MOBILE_COUNT and never enters the measure path.
+  useEffect(() => {
+    if (!posts || !containerRef.current || !contentRef.current) return;
+
+    const calculateVisibleCount = () => {
+      // Only calculate on desktop layout
+      if (window.innerWidth < 768) {
+        setVisibleCount(MOBILE_COUNT);
+        return;
+      }
+
+      const container = containerRef.current;
+      const content = contentRef.current;
+      if (!container || !content) return;
+
+      const containerHeight = container.clientHeight;
+      const header = container.querySelector('[data-header]');
+      const headerHeight = header ? header.clientHeight : 0;
+      const availableHeight = containerHeight - headerHeight - 24;
+
+      const articles = content.children;
+      if (articles.length === 0) return;
+
+      const firstArticle = articles[0] as HTMLElement;
+      const articleHeight = firstArticle.offsetHeight + 12;
+
+      const maxVisible = Math.floor(availableHeight / articleHeight);
+      setVisibleCount(Math.min(maxVisible, posts.length));
+    };
+
+    calculateVisibleCount();
+
+    const handleResize = () => {
+      setTimeout(calculateVisibleCount, 100);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [posts]);
+
   if (isLoading) {
     return (
       <Card className="h-full flex flex-col">
@@ -56,7 +102,7 @@ export function BitcoinNewsBrief() {
           <CardTitle className="text-xl-bold">Bitcoin News Brief</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 flex-1">
-          {Array.from({ length: VISIBLE_COUNT }).map((_, i) => (
+          {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="flex items-center space-x-3">
               <Skeleton className="h-10 w-10 rounded" />
               <Skeleton className="h-4 flex-1" />
@@ -81,12 +127,12 @@ export function BitcoinNewsBrief() {
   }
 
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader>
+    <Card ref={containerRef} className="h-full flex flex-col">
+      <CardHeader data-header>
         <CardTitle className="text-xl-bold">Bitcoin News Brief</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3 flex-1">
-        {posts.slice(0, VISIBLE_COUNT).map((post, idx) => (
+      <CardContent ref={contentRef} className="space-y-3 flex-1">
+        {posts.slice(0, visibleCount).map((post, idx) => (
           <div key={idx} className="flex items-center space-x-3 group">
             {post.thumbnail && (
               <img
