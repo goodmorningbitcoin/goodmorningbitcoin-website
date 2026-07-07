@@ -61,38 +61,26 @@ export default function Shows() {
 
   // Fetch show images from RSS feeds
   useEffect(() => {
-    const fetchShowImages = async () => {
-      const shows = showsData as Show[];
-      const imagePromises = shows.map(async (show) => {
-        if (show.podcastXml) {
-          try {
-            const podcastData = await fetchPodcastFeed(show.podcastXml);
-            
-            if (podcastData?.image) {
-              return { title: show.title, image: podcastData.image };
-            }
-          } catch {
-          }
-        }
-        return null;
-      });
+    let cancelled = false;
+    const shows = showsData as Show[];
 
-      const results = await Promise.all(imagePromises);
-      const newImages: Record<string, string> = {};
-      
-      results.forEach((result) => {
-        if (result) {
-          newImages[result.title] = result.image;
+    // Update images individually as each resolves so fast feeds
+    // don't wait on slow proxy-fallback feeds
+    shows.forEach(async (show) => {
+      if (!show.podcastXml) return;
+      try {
+        const podcastData = await fetchPodcastFeed(show.podcastXml);
+        if (cancelled) return;
+        if (podcastData?.image) {
+          setShowImages(prev => ({ ...prev, [show.title]: podcastData.image! }));
         }
-      });
-
-      if (Object.keys(newImages).length > 0) {
-        setShowImages(prev => ({ ...prev, ...newImages }));
+      } catch {
+        // Feed failed — leave placeholder
       }
-    };
+    });
 
-    fetchShowImages();
-  }, []); // Empty dependency array to run only once on mount
+    return () => { cancelled = true; };
+  }, []);
 
   const filteredShows = (showsData as Show[]).filter(show =>
     show.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
