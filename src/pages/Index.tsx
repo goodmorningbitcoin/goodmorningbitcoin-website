@@ -21,10 +21,10 @@ export default function Index() {
   const { data: nowPlaying } = useNowPlaying();
 
   useSeo({
-    title: 'Good Morning Bitcoin Radio - 24/7 Bitcoin Podcast & News Stream',
-    description: 'Listen to Good Morning Bitcoin Radio - the premier 24/7 Bitcoin radio station streaming curated podcasts, breaking news, and community discussions. Join thousands of Bitcoiners worldwide.',
+    title: 'Bitcoin Radio - 24/7 Bitcoin Podcast & News Stream | Good Morning Bitcoin',
+    description: 'The #1 24/7 Bitcoin radio station. Stream live Bitcoin podcasts, breaking cryptocurrency news, and community discussions 24/7. Listen free on any device.',
     path: '/',
-    keywords: 'bitcoin radio, good morning bitcoin, bitcoin podcast, bitcoin news, cryptocurrency radio, bitcoin stream, bitcoin community, bitcoin 247, btc radio, bitcoin audio, lightning network',
+    keywords: 'bitcoin radio, 24/7 bitcoin radio, bitcoin radio station, bitcoin podcast, bitcoin news, cryptocurrency radio, btc radio, bitcoin stream, bitcoin community, bitcoin 247, lightning network, bitcoin audio',
   });
 
   useJsonLd([
@@ -70,10 +70,10 @@ export default function Index() {
                 {/* Brand Header */}
                 <div className="text-center mb-8">
                   <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent mb-3" itemProp="name">
-                    Good Morning Bitcoin
+                    Good Morning Bitcoin Radio
                   </h1>
                   <p className="text-xl md:text-2xl text-muted-foreground font-medium">
-                    The Voice of Bitcoin, Every Morning
+                    The #1 24/7 Bitcoin Radio Station
                   </p>
                   <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-orange-400 mx-auto mt-4 rounded-full"></div>
                 </div>

@@ -64,7 +64,7 @@ export function LightningNetworkStats() {
           {parts.map((part, i) => (
             <span key={i} className="whitespace-nowrap">
               {part}
-              {i < parts.length - 1 && <span className="text-purple-400 mx-1.5 hidden sm:inline">|</span>}
+              {i < parts.length - 1 && <span className="text-purple-400 mx-1.5">|</span>}
             </span>
           ))}
         </div>
