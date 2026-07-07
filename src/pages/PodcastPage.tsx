@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useSeoMeta, useHead } from '@unhead/react';
 import { Play, Calendar, Clock, ExternalLink, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -258,6 +258,13 @@ export default function PodcastPage() {
     });
   };
 
+  // Strip HTML tags to get plain text for previews and meta tags
+  const stripHtml = (html: string): string => {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return (tmp.textContent || tmp.innerText || '').trim();
+  };
+
   // Generate JSON-LD structured data for SEO
   const generateStructuredData = () => {
     if (!show || !podcastData) return null;
@@ -283,7 +290,7 @@ export default function PodcastPage() {
       "associatedMedia": podcastData.episodes?.slice(0, 5).map((episode, index) => ({
         "@type": "PodcastEpisode",
         "name": episode.title,
-        "description": episode.description,
+        "description": stripHtml(episode.description),
         "url": `https://goodmorningbitcoin.com/podcast/${slug}#episode-${index}`,
         "datePublished": episode.pubDate,
         "duration": episode.duration,
@@ -368,9 +375,11 @@ export default function PodcastPage() {
                 <CardTitle className="text-2xl mb-3" itemProp="name">
                   <h1 className="m-0 p-0 text-inherit font-inherit">{show.title}</h1>
                 </CardTitle>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-4" itemProp="description">
-                  {podcastData.description || show.description}
-                </p>
+                <div className="text-muted-foreground text-sm leading-relaxed mb-4 prose prose-sm max-w-none dark:prose-invert" itemProp="description">
+                  {podcastData.description ? (
+                    <div dangerouslySetInnerHTML={{ __html: podcastData.description }} />
+                  ) : show.description}
+                </div>
                 
                 {/* Hidden SEO metadata */}
                 <div className="sr-only">
@@ -434,9 +443,9 @@ export default function PodcastPage() {
                         <h3 className="font-semibold text-base mb-2 line-clamp-2" itemProp="name">
                           {episode.title}
                         </h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2 mb-3" itemProp="description">
-                          {episode.description}
-                        </p>
+                        <div className="text-sm text-muted-foreground mb-3 prose prose-sm max-w-none dark:prose-invert line-clamp-3" itemProp="description">
+                          <div dangerouslySetInnerHTML={{ __html: episode.description }} />
+                        </div>
                         <div className="flex items-center gap-4 text-xs text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
