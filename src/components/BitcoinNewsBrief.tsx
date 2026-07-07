@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { useRef, useEffect, useState } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -25,17 +24,15 @@ interface Rss2JsonResponse {
   }>;
 }
 
-export function BitcoinNewsBrief() {
-  const [visibleCount, setVisibleCount] = useState(4); // Start with a reasonable default
-  const containerRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+// Fixed number of articles to show. No dynamic height calculation —
+// that caused render loops on mobile (scroll → resize → recalculate →
+// count change → layout shift → repeat).
+const VISIBLE_COUNT = 6;
 
+export function BitcoinNewsBrief() {
   const { data: posts, isLoading, error } = useQuery({
     queryKey: ['bitcoin-news'],
     queryFn: async () => {
-      // bitcoinnews.com's WordPress REST API is blocked by Cloudflare bot protection
-      // (returns 403 challenge page), so we use Bitcoin Magazine's RSS feed via
-      // rss2json which provides CORS-friendly JSON with thumbnails.
       const response = await fetch(
         'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fbitcoinmagazine.com%2Ffeed&count=10'
       );
@@ -52,44 +49,6 @@ export function BitcoinNewsBrief() {
     retry: 2,
   });
 
-  // Calculate how many articles fit in the available space
-  useEffect(() => {
-    if (!posts || !containerRef.current || !contentRef.current) return;
-
-    const calculateVisibleCount = () => {
-      const container = containerRef.current;
-      const content = contentRef.current;
-      if (!container || !content) return;
-
-      // Get the available height for content
-      const containerHeight = container.clientHeight;
-      const header = container.querySelector('[data-header]');
-      const headerHeight = header ? header.clientHeight : 0;
-      const availableHeight = containerHeight - headerHeight - 24; // 24px for padding
-
-      // Calculate height per article (approximately)
-      const articles = content.children;
-      if (articles.length === 0) return;
-
-      const firstArticle = articles[0] as HTMLElement;
-      const articleHeight = firstArticle.offsetHeight + 12; // 12px for gap (space-y-3)
-
-      const maxVisible = Math.floor(availableHeight / articleHeight);
-      setVisibleCount(Math.min(maxVisible, posts.length));
-    };
-
-    // Calculate on mount and when posts change
-    calculateVisibleCount();
-
-    // Recalculate on window resize
-    const handleResize = () => {
-      setTimeout(calculateVisibleCount, 100); // Small delay to ensure layout is stable
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [posts]);
-
   if (isLoading) {
     return (
       <Card className="h-full flex flex-col">
@@ -97,7 +56,7 @@ export function BitcoinNewsBrief() {
           <CardTitle className="text-xl-bold">Bitcoin News Brief</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 flex-1">
-          {Array.from({ length: 4 }).map((_, i) => (
+          {Array.from({ length: VISIBLE_COUNT }).map((_, i) => (
             <div key={i} className="flex items-center space-x-3">
               <Skeleton className="h-10 w-10 rounded" />
               <Skeleton className="h-4 flex-1" />
@@ -122,12 +81,12 @@ export function BitcoinNewsBrief() {
   }
 
   return (
-    <Card ref={containerRef} className="h-full flex flex-col">
-      <CardHeader data-header>
+    <Card className="h-full flex flex-col">
+      <CardHeader>
         <CardTitle className="text-xl-bold">Bitcoin News Brief</CardTitle>
       </CardHeader>
-      <CardContent ref={contentRef} className="space-y-3 flex-1">
-        {posts.slice(0, visibleCount).map((post, idx) => (
+      <CardContent className="space-y-3 flex-1">
+        {posts.slice(0, VISIBLE_COUNT).map((post, idx) => (
           <div key={idx} className="flex items-center space-x-3 group">
             {post.thumbnail && (
               <img
