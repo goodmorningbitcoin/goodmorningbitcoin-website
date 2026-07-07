@@ -197,21 +197,20 @@ export function useZaps(
       // For all other events, pass the ID string to get 'e' tag
       const zapAmount = amount * 1000; // convert to millisats
       const isAddressable = actualTarget.kind >= 30000 && actualTarget.kind < 40000;
-      const zapRequest = isAddressable
-        ? nip57.makeZapRequest({
-            profile: actualTarget.pubkey,
-            event: actualTarget,
-            amount: zapAmount,
-            relays: [config.relayUrl],
-            comment
-          })
-        : nip57.makeZapRequest({
-            profile: actualTarget.pubkey,
-            event: actualTarget.id,
-            amount: zapAmount,
-            relays: [config.relayUrl],
-            comment
-          });
+
+      // Cast to nostr-tools Event type — nostrify's NostrEvent has a
+      // slightly different tag signature but the shape is compatible
+      const eventParam = isAddressable
+        ? actualTarget as unknown as Event
+        : actualTarget.id;
+
+      const zapRequest = nip57.makeZapRequest({
+        profile: actualTarget.pubkey,
+        event: eventParam,
+        amount: zapAmount,
+        relays: [config.relayUrl],
+        comment
+      });
 
       // Sign the zap request (but don't publish to relays - only send to LNURL endpoint)
       if (!user.signer) {
