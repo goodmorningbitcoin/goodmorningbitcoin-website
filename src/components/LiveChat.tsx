@@ -141,10 +141,13 @@ export function LiveChat() {
     };
   }, [nostr]);
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to bottom when new messages arrive.
+  // We scroll the chat container itself, NOT the whole page —
+  // scrollIntoView would scroll the page down to the chat on every load.
   useEffect(() => {
-    if (messagesEndRef.current && messagesEndRef.current.scrollIntoView) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    const container = messagesEndRef.current?.parentElement;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
     }
   }, [messages]);
 
