@@ -13,7 +13,6 @@ export function Header() {
   const navigationLinks = [
     { to: '/about', label: 'About', type: 'internal' },
     ...(user ? [{ to: '/community', label: 'Community', type: 'internal' }] : []),
-    { to: 'https://rustysats.com', label: 'RustySats', type: 'external' },
     { to: 'https://www.orangem.art/', label: 'Orange', type: 'external' },
     { to: '/shows', label: 'Shows', type: 'internal' },
   ];
