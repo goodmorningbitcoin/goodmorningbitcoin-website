@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { useSeoMeta, useHead } from '@unhead/react';
+import { useSeo, breadcrumbSchema, useJsonLd } from '@/lib/useSeo';
 import { Play, Calendar, Clock, ExternalLink, ArrowLeft } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { parsePodcastXml } from '@/lib/podcastXmlParser';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
-import { generateBreadcrumbSchema } from '@/lib/seoUtils';
 import showsData from '../../public/shows.json';
 
 interface Show {
@@ -54,53 +53,28 @@ export default function PodcastPage() {
     retry: 1,
   });
 
-  // Enhanced SEO metadata that updates with dynamic content
-  useSeoMeta({
-    title: show 
+  // SEO with canonical, OG image from RSS, and breadcrumbs
+  useSeo({
+    title: show
       ? `${show.title} - Bitcoin Podcast Episodes | Good Morning Bitcoin Radio`
       : 'Bitcoin Podcast - Good Morning Bitcoin Radio',
     description: show
       ? `Listen to ${show.title} episodes on Good Morning Bitcoin Radio. ${show.description} Stream Bitcoin podcasts with Lightning support and zap your favorite creators.`
-      : 'Listen to Bitcoin podcast episodes on Good Morning Bitcoin Radio',
+      : 'Listen to Bitcoin podcast episodes on Good Morning Bitcoin Radio.',
+    path: `/podcast/${slug}`,
+    image: podcastData?.image,
     keywords: show
       ? `${show.title}, bitcoin podcast, ${show.title.toLowerCase()}, bitcoin episodes, cryptocurrency podcast, bitcoin radio, lightning zaps, ${show.title} episodes`
       : 'bitcoin podcast, cryptocurrency podcast, bitcoin radio',
-    
-    // Open Graph tags
-    ogTitle: show 
-      ? `${show.title} - Bitcoin Podcast Episodes`
-      : 'Bitcoin Podcast Episodes',
-    ogDescription: show
-      ? `Listen to ${show.title} on Good Morning Bitcoin Radio. ${show.description.substring(0, 160)}...`
-      : 'Listen to Bitcoin podcast episodes',
-    ogType: 'website',
-    ogSiteName: 'Good Morning Bitcoin Radio',
-    ogUrl: `https://goodmorningbitcoin.com/podcast/${slug}`,
-    ogImage: podcastData?.image || 'https://goodmorningbitcoin.com/og-podcast.jpg', // Fallback OG image
-    
-    // Twitter Card tags
-    twitterCard: 'summary_large_image',
-    twitterTitle: show 
-      ? `${show.title} - Bitcoin Podcast Episodes`
-      : 'Bitcoin Podcast Episodes',
-    twitterDescription: show
-      ? `Listen to ${show.title} episodes. ${show.description.substring(0, 120)}...`
-      : 'Listen to Bitcoin podcast episodes',
-    twitterImage: podcastData?.image || 'https://goodmorningbitcoin.com/twitter-podcast.jpg',
-    
-    // Additional SEO tags  
-    robots: 'index,follow',
   });
 
-  // Add canonical link
-  useHead({
-    link: [
-      {
-        rel: 'canonical',
-        href: `https://goodmorningbitcoin.com/podcast/${slug}`
-      }
-    ]
-  });
+  useJsonLd([
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Shows', path: '/shows' },
+      { name: show?.title || 'Podcast', path: `/podcast/${slug}` },
+    ]),
+  ]);
 
   const playEpisode = async (episode: Episode) => {
     // For complex tracking URLs, try to resolve to final URL first
@@ -325,20 +299,12 @@ export default function PodcastPage() {
       
       {/* JSON-LD Structured Data */}
       {show && podcastData && (
-        <>
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(generateStructuredData(), null, 2)
-            }}
-          />
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(generateBreadcrumbSchema(show.title, slug || ''), null, 2)
-            }}
-          />
-        </>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(generateStructuredData(), null, 2)
+          }}
+        />
       )}
       
       <div className="max-w-4xl mx-auto py-10 px-4 space-y-6" itemScope itemType="https://schema.org/PodcastSeries">

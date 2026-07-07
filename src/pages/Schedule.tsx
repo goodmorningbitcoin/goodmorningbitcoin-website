@@ -1,4 +1,4 @@
-import { useSeoMeta } from '@unhead/react';
+import { useSeo, breadcrumbSchema, useJsonLd } from '@/lib/useSeo';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -19,10 +19,18 @@ interface Show {
 }
 
 export default function Schedule() {
-  useSeoMeta({
+  useSeo({
     title: 'Schedule - Good Morning Bitcoin',
-    description: 'View the Good Morning Bitcoin radio schedule and see what\'s playing next.',
+    description: 'View the Good Morning Bitcoin radio schedule and see what\'s playing next on our 24/7 Bitcoin podcast stream.',
+    path: '/schedule',
   });
+
+  useJsonLd([
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Schedule', path: '/schedule' },
+    ]),
+  ]);
 
   const { data: nowPlaying } = useNowPlaying();
   const { setCurrentSource } = useAudioPlayer();

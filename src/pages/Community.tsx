@@ -1,4 +1,4 @@
-import { useSeoMeta } from '@unhead/react';
+import { useSeo, breadcrumbSchema, useJsonLd } from '@/lib/useSeo';
 import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
 import { CommentsSection } from '@/components/comments/CommentsSection';
@@ -10,10 +10,18 @@ import { Users, MessageCircle, Radio, ExternalLink } from 'lucide-react';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 export default function Community() {
-  useSeoMeta({
+  useSeo({
     title: 'Community - Good Morning Bitcoin',
     description: 'Join the Good Morning Bitcoin community on Nostr. Discuss Bitcoin, podcasts, and connect with fellow Bitcoiners.',
+    path: '/community',
   });
+
+  useJsonLd([
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Community', path: '/community' },
+    ]),
+  ]);
 
   const { user } = useCurrentUser();
   const communityUrl = new URL('https://goodmorningbitcoin.com/community');

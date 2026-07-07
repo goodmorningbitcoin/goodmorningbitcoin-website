@@ -12,11 +12,11 @@ export function OrganizationSchema() {
     "url": "https://goodmorningbitcoin.com",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://goodmorningbitcoin.com/logo.png",
-      "width": 512,
-      "height": 512
+      "url": "https://goodmorningbitcoin.com/assets/img/og-default.jpg",
+      "width": 1200,
+      "height": 630
     },
-    "image": "https://goodmorningbitcoin.com/og-image.jpg",
+    "image": "https://goodmorningbitcoin.com/assets/img/og-default.jpg",
     
     // Contact and business information
     "contactPoint": {

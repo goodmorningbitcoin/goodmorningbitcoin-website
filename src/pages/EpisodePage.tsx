@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { useSeoMeta, useHead } from '@unhead/react';
+import { useSeo, breadcrumbSchema, useJsonLd } from '@/lib/useSeo';
 import { Play, Calendar, Clock, ExternalLink, ArrowLeft, Share2 } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
@@ -57,26 +57,28 @@ export default function EpisodePage() {
     return (tmp.textContent || tmp.innerText || '').trim();
   };
 
-  const shareUrl = `https://goodmorningbitcoin.com/podcast/${slug}/episode/${episodeId}`;
+  const shareUrl = `/podcast/${slug}/episode/${episodeId}`;
 
-  useSeoMeta({
+  useSeo({
     title: episode
       ? `${episode.title} - ${show?.title} | Good Morning Bitcoin Radio`
       : 'Episode - Good Morning Bitcoin Radio',
     description: episode
       ? stripHtml(episode.description).substring(0, 160)
       : 'Listen to this Bitcoin podcast episode on Good Morning Bitcoin Radio.',
-    ogTitle: episode?.title || 'Bitcoin Podcast Episode',
-    ogDescription: episode ? stripHtml(episode.description).substring(0, 160) : undefined,
+    path: shareUrl,
+    image: podcastData?.image,
     ogType: 'article',
-    twitterCard: 'summary_large_image',
-    twitterTitle: episode?.title,
-    twitterDescription: episode ? stripHtml(episode.description).substring(0, 120) : undefined,
   });
 
-  useHead({
-    link: [{ rel: 'canonical', href: shareUrl }],
-  });
+  useJsonLd([
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Shows', path: '/shows' },
+      { name: show?.title || 'Podcast', path: `/podcast/${slug}` },
+      { name: episode?.title || 'Episode', path: shareUrl },
+    ]),
+  ]);
 
   const handlePlay = () => {
     if (show && episode) {

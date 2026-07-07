@@ -1,4 +1,4 @@
-import { useSeoMeta } from '@unhead/react';
+import { useSeo, breadcrumbSchema, useJsonLd } from '@/lib/useSeo';
 import { Link } from 'react-router-dom';
 import { Radio, Heart, ExternalLink, Play, Users } from 'lucide-react';
 import { Layout } from '@/components/Layout';
@@ -21,17 +21,19 @@ export default function About() {
   const shows = showsData as Show[];
   const { setCurrentSource, togglePlay, currentSource, isPlaying } = useAudioPlayer();
 
-  useSeoMeta({
+  useSeo({
     title: 'About - Good Morning Bitcoin Radio',
     description: 'Good Morning Bitcoin started as an in-game radio station in Rust on the Orange Bitcoin server. Now it is a 24/7 internet radio station streaming across the globe, including Nostr Radio.',
+    path: '/about',
     keywords: 'good morning bitcoin, bitcoin radio, rust game radio, orange bitcoin server, nostr radio, bitcoin community, bitcoin podcast station',
-    ogTitle: 'About Good Morning Bitcoin Radio',
-    ogDescription: 'From an in-game Rust radio station to a 24/7 Bitcoin internet radio broadcast. Hear the story and meet the podcasters who make it possible.',
-    ogType: 'website',
-    twitterCard: 'summary_large_image',
-    twitterTitle: 'About Good Morning Bitcoin Radio',
-    twitterDescription: 'From a Rust in-game radio to 24/7 Bitcoin internet radio. Meet the podcasters who share their content.',
   });
+
+  useJsonLd([
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'About', path: '/about' },
+    ]),
+  ]);
 
   const handlePlayRadio = () => {
     if (currentSource?.type !== 'radio') {

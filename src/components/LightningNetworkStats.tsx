@@ -59,12 +59,12 @@ export function LightningNetworkStats() {
   return (
     <Card className="bg-gradient-to-r from-purple-900 to-indigo-900 text-white border-purple-700">
       <CardContent className="p-4">
-        <div className="flex items-center justify-center gap-2 text-center font-mono text-sm md:text-base overflow-x-auto">
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center font-mono text-sm md:text-base">
           <Zap className="h-4 w-4 text-yellow-400 flex-shrink-0" />
           {parts.map((part, i) => (
             <span key={i} className="whitespace-nowrap">
               {part}
-              {i < parts.length - 1 && <span className="text-purple-400 mx-1.5">|</span>}
+              {i < parts.length - 1 && <span className="text-purple-400 mx-1.5 hidden sm:inline">|</span>}
             </span>
           ))}
         </div>

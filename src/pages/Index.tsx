@@ -1,6 +1,6 @@
-import { useSeoMeta } from '@unhead/react';
 import { Play, Radio, Music, Users } from 'lucide-react';
 import { WebSiteSchema } from '@/components/WebSiteSchema';
+import { OrganizationSchema } from '@/components/OrganizationSchema';
 import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
 import { FeaturedShow } from '@/components/FeaturedShow';
@@ -14,23 +14,24 @@ import { Button } from '@/components/ui/button';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { useNowPlaying } from '@/hooks/useNowPlaying';
 import { LiveChat } from '@/components/LiveChat';
+import { useSeo, breadcrumbSchema, useJsonLd } from '@/lib/useSeo';
 
 export default function Index() {
   const { setCurrentSource, togglePlay, currentSource, isPlaying } = useAudioPlayer();
   const { data: nowPlaying } = useNowPlaying();
-  
-  useSeoMeta({
+
+  useSeo({
     title: 'Good Morning Bitcoin Radio - 24/7 Bitcoin Podcast & News Stream',
-    description: 'Listen to Good Morning Bitcoin Radio - the premier 24/7 Bitcoin radio station streaming curated podcasts, breaking news, and community discussions. Join thousands of Bitcoiners worldwide for the voice of Bitcoin, every morning.',
-    keywords: 'bitcoin radio, good morning bitcoin, bitcoin podcast, bitcoin news, cryptocurrency radio, bitcoin stream, bitcoin community, bitcoin 247, btc radio, bitcoin audio',
-    ogTitle: 'Good Morning Bitcoin Radio - 24/7 Bitcoin Podcast & News Stream',
-    ogDescription: 'Listen to Good Morning Bitcoin Radio - the premier 24/7 Bitcoin radio station streaming curated podcasts, breaking news, and community discussions.',
-    ogType: 'website',
-    ogSiteName: 'Good Morning Bitcoin Radio',
-    twitterCard: 'summary_large_image',
-    twitterTitle: 'Good Morning Bitcoin Radio - 24/7 Bitcoin Stream',
-    twitterDescription: 'The voice of Bitcoin, every morning. Join thousands listening to 24/7 Bitcoin radio.',
+    description: 'Listen to Good Morning Bitcoin Radio - the premier 24/7 Bitcoin radio station streaming curated podcasts, breaking news, and community discussions. Join thousands of Bitcoiners worldwide.',
+    path: '/',
+    keywords: 'bitcoin radio, good morning bitcoin, bitcoin podcast, bitcoin news, cryptocurrency radio, bitcoin stream, bitcoin community, bitcoin 247, btc radio, bitcoin audio, lightning network',
   });
+
+  useJsonLd([
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+    ]),
+  ]);
 
   const handlePlayRadio = () => {
     // Set radio source if not already set
@@ -51,6 +52,7 @@ export default function Index() {
     <Layout>
       {/* WebSite Schema for homepage */}
       <WebSiteSchema />
+      <OrganizationSchema />
       
       <Header />
       
