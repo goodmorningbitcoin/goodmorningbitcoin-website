@@ -31,12 +31,12 @@ export function LightningNetworkStats() {
   });
 
   const formatCapacity = (sats: number): string => {
-    const btc = sats / 100000000;
-    if (btc >= 1000) return `${(btc / 1000).toFixed(1)}k BTC`;
-    return `${btc.toFixed(0)} BTC`;
+    if (sats >= 1000000) return `${(sats / 1000000).toFixed(1)}M sats`;
+    if (sats >= 1000) return `${(sats / 1000).toFixed(0)}k sats`;
+    return `${sats} sats`;
   };
 
-  const formatFeeRate = (ppm: number): string => `${ppm} ppm`;
+  const formatFeeRate = (ppm: number): string => `${ppm} sat/million`;
 
   if (isLoading || !stats) {
     return (
