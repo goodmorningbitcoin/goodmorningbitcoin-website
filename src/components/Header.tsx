@@ -38,7 +38,7 @@ export function Header() {
             <SheetContent side="left" className="w-[280px] bg-gmb-orange text-white border-r-0">
               <SheetHeader>
                 <SheetTitle className="text-white text-left text-lg font-bold">
-                  GoodMorningBitcoin.com
+                  <Link to="/">GoodMorningBitcoin.com</Link>
                 </SheetTitle>
               </SheetHeader>
               <nav className="mt-8 flex flex-col gap-2">
