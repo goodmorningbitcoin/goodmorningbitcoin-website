@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { parsePodcastXml } from '@/lib/podcastXmlParser';
+import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
 import { usePodcastPlayer } from '@/hooks/usePodcastPlayer';
 import { useToast } from '@/hooks/useToast';
 import showsData from '../../public/shows.json';
@@ -35,9 +36,7 @@ export default function EpisodePage() {
     queryKey: ['podcast-episodes', show?.podcastXml],
     queryFn: async () => {
       if (!show?.podcastXml) return null;
-      const response = await fetch(show.podcastXml);
-      const xmlText = await response.text();
-      return parsePodcastXml(xmlText);
+      return fetchPodcastFeed(show.podcastXml);
     },
     enabled: !!show?.podcastXml,
     staleTime: 1800000,

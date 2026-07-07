@@ -5,6 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useStationHistory } from '@/hooks/useStationHistory';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { parsePodcastXml } from '@/lib/podcastXmlParser';
+import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
 import showsData from '../../public/shows.json';
 
 export function RecentEpisodes() {
@@ -36,14 +37,8 @@ export function RecentEpisodes() {
       });
 
       if (matchingShow && matchingShow.podcastXml) {
-        // Fetch RSS feed directly
-        const response = await fetch(matchingShow.podcastXml);
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const xmlText = await response.text();
-        const podcastData = parsePodcastXml(xmlText);
+        // Fetch RSS feed (with CORS proxy fallback)
+        const podcastData = await fetchPodcastFeed(matchingShow.podcastXml);
         
         if (podcastData && podcastData.episodes && podcastData.episodes.length > 0) {
           // Try to find the specific episode that matches the title

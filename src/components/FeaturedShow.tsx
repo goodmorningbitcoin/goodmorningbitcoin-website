@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { parsePodcastXml } from '@/lib/podcastXmlParser';
+import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
 import showsData from '../../public/shows.json';
 
 interface Show {
@@ -28,10 +29,7 @@ export function FeaturedShow() {
     queryKey: ['podcast-data', featuredShow?.podcastXml],
     queryFn: async () => {
       if (!featuredShow?.podcastXml) return null;
-      
-      const response = await fetch(featuredShow.podcastXml);
-      const xmlText = await response.text();
-      return parsePodcastXml(xmlText);
+      return fetchPodcastFeed(featuredShow.podcastXml);
     },
     enabled: !!featuredShow?.podcastXml,
     staleTime: 1800000, // 30 minutes

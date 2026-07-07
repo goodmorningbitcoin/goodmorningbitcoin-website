@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { parsePodcastXml } from '@/lib/podcastXmlParser';
+import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import showsData from '../../public/shows.json';
 
@@ -43,10 +44,7 @@ export default function PodcastPage() {
     queryKey: ['podcast-episodes', show?.podcastXml],
     queryFn: async () => {
       if (!show?.podcastXml) return null;
-      
-      const response = await fetch(show.podcastXml);
-      const xmlText = await response.text();
-      return parsePodcastXml(xmlText);
+      return fetchPodcastFeed(show.podcastXml);
     },
     enabled: !!show?.podcastXml,
     staleTime: 1800000, // 30 minutes

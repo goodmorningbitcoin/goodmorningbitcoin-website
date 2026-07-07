@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ExternalLink, Twitter, Search, Play, Eye } from 'lucide-react';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
-import { parsePodcastXml } from '@/lib/podcastXmlParser';
+import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
 import { useSeo, breadcrumbSchema, useJsonLd } from '@/lib/useSeo';
 import showsData from '../../public/shows.json';
 
@@ -66,17 +66,12 @@ export default function Shows() {
       const imagePromises = shows.map(async (show) => {
         if (show.podcastXml) {
           try {
-            const response = await fetch(show.podcastXml);
-            if (!response.ok) return null;
-            
-            const xmlText = await response.text();
-            const podcastData = parsePodcastXml(xmlText);
+            const podcastData = await fetchPodcastFeed(show.podcastXml);
             
             if (podcastData?.image) {
               return { title: show.title, image: podcastData.image };
             }
-          } catch (error) {
-            console.error(`Could not fetch image for ${show.title}:`, error);
+          } catch {
           }
         }
         return null;
@@ -111,16 +106,7 @@ export default function Shows() {
     }
     
     try {
-      // Fetch and parse the podcast RSS feed directly
-      
-      const response = await fetch(show.podcastXml);
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      
-      const xmlText = await response.text();
-      
-      const podcastData = parsePodcastXml(xmlText);
+      const podcastData = await fetchPodcastFeed(show.podcastXml);
       
       if (podcastData && podcastData.episodes && podcastData.episodes.length > 0) {
         // Get the latest episode (first in the array)

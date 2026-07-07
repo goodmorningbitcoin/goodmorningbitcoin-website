@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
-import { parsePodcastXml } from '@/lib/podcastXmlParser';
+import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
 import { RADIO_SOURCE } from '@/lib/constants';
 import type { PodcastMetadata, Episode } from '@/lib/podcastXmlParser';
 import showsData from '../../public/shows.json';
@@ -47,12 +47,7 @@ export function usePodcastPlayer() {
    * Fetch and parse a podcast RSS feed.
    */
   const fetchPodcastData = useCallback(async (xmlUrl: string): Promise<PodcastMetadata | null> => {
-    const response = await fetch(xmlUrl);
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    const xmlText = await response.text();
-    return parsePodcastXml(xmlText);
+    return fetchPodcastFeed(xmlUrl);
   }, []);
 
   /**

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNowPlaying } from '@/hooks/useNowPlaying';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { parsePodcastXml } from '@/lib/podcastXmlParser';
+import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
 import type { ValueBlock } from '@/lib/podcastXmlParser';
 
 /**
@@ -85,22 +86,14 @@ export function useValueBlock() {
         // console.log('useValueBlock: Using RSS URL:', podcastXmlUrl);
 
         try {
-          // Fetch the podcast RSS feed
-          const response = await fetch(podcastXmlUrl, { signal });
-          if (!response.ok) {
-            console.warn('Failed to fetch podcast RSS for value block:', response.status);
-            return null;
-          }
-
-          const xmlText = await response.text();
-          const podcastData = parsePodcastXml(xmlText);
+          // Fetch the podcast RSS feed (with CORS proxy fallback)
+          const podcastData = await fetchPodcastFeed(podcastXmlUrl, { signal });
           
           return podcastData?.valueBlock || null;
         } catch (error) {
           if (error instanceof Error && error.name === 'AbortError') {
             throw error; // Re-throw abort errors
           }
-          console.warn('Error fetching podcast RSS for value block:', error);
           return null;
         }
       } else {
