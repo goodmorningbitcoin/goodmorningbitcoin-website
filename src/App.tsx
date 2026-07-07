@@ -26,7 +26,7 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       staleTime: 60000, // 1 minute
-      gcTime: Infinity,
+      gcTime: 5 * 60 * 1000, // 5 minutes — cache is freed after this
     },
   },
 });

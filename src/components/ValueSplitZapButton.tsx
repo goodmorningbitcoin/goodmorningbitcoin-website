@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { useToast } from '@/hooks/useToast';
+import { useBoost } from '@/hooks/useBoost';
 import type { ValueBlock } from '@/lib/podcastXmlParser';
 import {
   Dialog,
@@ -29,9 +29,8 @@ export function ValueSplitZapButton({ valueBlock, showTitle, className }: ValueS
   const [isOpen, setIsOpen] = useState(false);
   const [amount, setAmount] = useState(valueBlock.suggested || 100);
   const [message, setMessage] = useState('');
-  const [isZapping, setIsZapping] = useState(false);
   const { user } = useCurrentUser();
-  const { toast } = useToast();
+  const { handleBoost, isBoosting } = useBoost();
 
   if (!user) {
     return (
@@ -44,41 +43,11 @@ export function ValueSplitZapButton({ valueBlock, showTitle, className }: ValueS
 
   const totalSplits = valueBlock.recipients.reduce((sum, recipient) => sum + recipient.split, 0);
 
-  const handleBoost = async () => {
-    if (!user || amount <= 0) return;
-
-    setIsZapping(true);
-    try {
-      // Calculate individual payments based on splits
-      const payments = valueBlock.recipients.map((recipient) => ({
-        address: recipient.address,
-        amount: Math.floor((amount * recipient.split) / totalSplits),
-        name: recipient.name || 'Unknown',
-        customKey: recipient.customKey,
-        customValue: recipient.customValue,
-      }));
-
-      // TODO: Implement actual Lightning payments to each recipient
-      // This would integrate with WebLN or NWC to send payments
-      console.log('Sending boost payments:', payments);
-
-      toast({
-        title: 'Boost Sent! ⚡',
-        description: `${amount} sats sent to ${valueBlock.recipients.length} recipients`,
-      });
-
+  const onBoost = () => {
+    handleBoost(valueBlock, amount, () => {
       setIsOpen(false);
       setMessage('');
-    } catch (error) {
-      console.error('Failed to send boost:', error);
-      toast({
-        title: 'Boost Failed',
-        description: 'Unable to send boost. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsZapping(false);
-    }
+    });
   };
 
   const presetAmounts = [21, 100, 500, 1000, 2100];
@@ -95,7 +64,7 @@ export function ValueSplitZapButton({ valueBlock, showTitle, className }: ValueS
           </Badge>
         </Button>
       </DialogTrigger>
-      
+
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -169,11 +138,11 @@ export function ValueSplitZapButton({ valueBlock, showTitle, className }: ValueS
 
           {/* Send Button */}
           <Button
-            onClick={handleBoost}
-            disabled={isZapping || amount <= 0}
+            onClick={onBoost}
+            disabled={isBoosting || amount <= 0}
             className="w-full bg-orange-500 hover:bg-orange-600"
           >
-            {isZapping ? (
+            {isBoosting ? (
               'Sending Boost...'
             ) : (
               <>

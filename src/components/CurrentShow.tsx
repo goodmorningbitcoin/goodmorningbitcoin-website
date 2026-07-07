@@ -12,7 +12,6 @@ import showsData from '../../public/shows.json';
 
 interface Show {
   title: string;
-  imgsrc: string;
   description: string;
   fountainlink: string;
   xlink: string;
@@ -110,7 +109,7 @@ export function CurrentShow() {
         <CardContent>
           <div className="flex gap-4">
             <Avatar className="h-20 w-20 rounded-lg">
-              <AvatarImage src={currentShow.imgsrc} alt={currentShow.title} />
+              <AvatarImage src={undefined} alt={currentShow.title} />
               <AvatarFallback className="rounded-lg">
                 {currentShow.title.substring(0, 2).toUpperCase()}
               </AvatarFallback>

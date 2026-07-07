@@ -15,33 +15,52 @@ export function EmailSignup() {
     if (!email.trim()) return;
 
     setIsLoading(true);
-    
+
     try {
-      // Use the MailerLite form endpoint from the original site
+      // MailerLite subscribe endpoint (account 1459975, form 151930403370829428)
       const formData = new FormData();
       formData.append('fields[email]', email);
       formData.append('ml-submit', '1');
       formData.append('anticsrf', 'true');
 
-      const _response = await fetch('https://assets.mailerlite.com/jsonp/1459975/forms/151930403370829428/subscribe', {
+      const response = await fetch('https://assets.mailerlite.com/jsonp/1459975/forms/151930403370829428/subscribe', {
         method: 'POST',
         body: formData,
-        mode: 'no-cors', // Required for cross-origin MailerLite requests
       });
 
-      // Since we're using no-cors mode, we can't check the response status
-      // but we'll assume it worked if no error was thrown
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      // MailerLite returns JSON when the form accepts the submission.
+      // If the email is invalid or already subscribed, it returns a
+      // status field we can check.
+      let alreadySubscribed = false;
+      try {
+        const data = await response.json();
+        if (data.status === 'ERROR' || data.errors) {
+          throw new Error(data.reason || data.message || 'Subscription was rejected.');
+        }
+        alreadySubscribed = !!data.already;
+      } catch {
+        // Response wasn't JSON — some MailerLite configs return a redirect
+        // or HTML. Treat a 2xx response as success.
+      }
+
       toast({
-        title: 'Success!',
-        description: 'Thanks for subscribing to Bitcoin news!',
+        title: alreadySubscribed ? 'Already subscribed!' : 'Success!',
+        description: alreadySubscribed
+          ? 'You are already on our list.'
+          : 'Thanks for subscribing to Bitcoin news!',
       });
-      
+
       setEmail('');
     } catch (error) {
-      console.error('Subscription error:', error);
       toast({
         title: 'Error',
-        description: 'Failed to subscribe. Please try again.',
+        description: error instanceof Error
+          ? `Failed to subscribe: ${error.message}`
+          : 'Failed to subscribe. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -70,8 +89,8 @@ export function EmailSignup() {
             required
             className="w-full"
           />
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             disabled={isLoading || !email.trim()}
             className="w-full bg-black hover:bg-gray-800 text-white"
           >

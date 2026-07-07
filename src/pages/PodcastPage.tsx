@@ -1,8 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useSeoMeta, useHead } from '@unhead/react';
 import { Play, Calendar, Clock, ExternalLink, ArrowLeft } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -116,7 +115,6 @@ export default function PodcastPage() {
           finalAudioUrl = headResponse.url;
         }
       } catch (error) {
-        console.log('Could not resolve final URL, using original:', error);
       }
     }
     
@@ -440,9 +438,11 @@ export default function PodcastPage() {
                         <Play className="h-4 w-4" />
                       </Button>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-base mb-2 line-clamp-2" itemProp="name">
-                          {episode.title}
-                        </h3>
+                        <Link to={`/podcast/${slug}/episode/${index}`}>
+                          <h3 className="font-semibold text-base mb-2 line-clamp-2 hover:text-orange-600 dark:hover:text-orange-400 transition-colors" itemProp="name">
+                            {episode.title}
+                          </h3>
+                        </Link>
                         <div className="text-sm text-muted-foreground mb-3 prose prose-sm max-w-none dark:prose-invert line-clamp-3" itemProp="description">
                           <div dangerouslySetInnerHTML={{ __html: episode.description }} />
                         </div>

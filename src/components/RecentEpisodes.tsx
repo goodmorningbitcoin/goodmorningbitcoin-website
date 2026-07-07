@@ -70,7 +70,6 @@ export function RecentEpisodes() {
                   finalAudioUrl = headResponse.url;
                 }
               } catch (error) {
-                console.log('Could not resolve final URL, using original:', error);
               }
             }
             

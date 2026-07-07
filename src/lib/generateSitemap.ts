@@ -80,6 +80,4 @@ export function saveSitemap(): void {
   const sitemap = generateSitemap();
   
   // This function is used for development and build processes
-  console.log('Generated sitemap:');
-  console.log(sitemap);
 }

@@ -106,12 +106,10 @@ export function LiveChat() {
               
               // Handle EOSE (End of Stored Events) - continue streaming
               if (msg[0] === 'EOSE') {
-                console.log('Live chat: Connected to real-time stream');
               }
               
               // Handle CLOSED - relay closed the subscription
               if (msg[0] === 'CLOSED') {
-                console.log('Live chat: Relay closed subscription');
                 break;
               }
             }

@@ -92,7 +92,6 @@ export default function Shows() {
     
     try {
       // Fetch and parse the podcast RSS feed directly
-      console.log('Fetching RSS feed:', show.podcastXml);
       
       const response = await fetch(show.podcastXml);
       if (!response.ok) {
@@ -100,17 +99,8 @@ export default function Shows() {
       }
       
       const xmlText = await response.text();
-      console.log('RSS feed fetched successfully, parsing XML...');
       
       const podcastData = parsePodcastXml(xmlText);
-      
-      // Debug logging to see what we actually parsed
-      console.log('Parsed podcast data:', {
-        title: podcastData?.title,
-        hasValueBlock: !!podcastData?.valueBlock,
-        valueBlock: podcastData?.valueBlock,
-        episodeCount: podcastData?.episodes?.length
-      });
       
       if (podcastData && podcastData.episodes && podcastData.episodes.length > 0) {
         // Get the latest episode (first in the array)
@@ -128,7 +118,6 @@ export default function Shows() {
               finalAudioUrl = headResponse.url;
             }
           } catch (error) {
-            console.log('Could not resolve final URL, using original:', error);
           }
         }
         

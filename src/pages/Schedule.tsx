@@ -11,7 +11,6 @@ import showsData from '../../public/shows.json';
 
 interface Show {
   title: string;
-  imgsrc: string;
   description: string;
   fountainlink: string;
   xlink: string;
@@ -178,7 +177,7 @@ export default function Schedule() {
                       </div>
                       
                       <Avatar className="h-12 w-12 rounded-lg">
-                        <AvatarImage src={show?.imgsrc} alt={item.title} />
+                        <AvatarImage src={undefined} alt={item.title} />
                         <AvatarFallback className="rounded-lg">
                           {item.title.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
