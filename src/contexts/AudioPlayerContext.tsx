@@ -9,7 +9,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
     title: 'Good Morning Bitcoin Radio',
     artist: 'Live Stream',
   });
-  
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(70);
   const [isMuted, setIsMuted] = useState(false);
@@ -19,29 +19,30 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   // Update audio source when currentSource changes
   useEffect(() => {
     if (!audioRef.current || !currentSource) return;
-    
+
     const audio = audioRef.current;
     const wasPlaying = !audio.paused;
-    
+
     // Stop current playback
     audio.pause();
-    
+
     // Update source
     audio.src = currentSource.url;
-    
-    // Auto-play for both radio and podcasts
+
     if (currentSource.type === 'radio') {
-      // For radio, only auto-play if it was already playing
       if (wasPlaying) {
         audio.play().catch(console.error);
       }
     } else if (currentSource.type === 'podcast') {
-      // For podcasts, always auto-play when a new episode is selected
       audio.load();
-      // Auto-play the podcast episode
-      audio.addEventListener('canplay', () => {
+      // Auto-play: wait for canplay, then play. This is more reliable
+      // than calling play() immediately after load() because some browsers
+      // need the new source to be buffered first.
+      const handleCanPlay = () => {
         audio.play().catch(console.error);
-      }, { once: true });
+        audio.removeEventListener('canplay', handleCanPlay);
+      };
+      audio.addEventListener('canplay', handleCanPlay);
     }
   }, [currentSource]);
 
@@ -61,6 +62,10 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
     const handlePause = () => setIsPlaying(false);
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
     const handleDurationChange = () => setDuration(audio.duration);
+    const handleError = () => {
+      console.error('Audio playback error:', audio.error);
+      setIsPlaying(false);
+    };
     const handleEnded = () => {
       setIsPlaying(false);
       if (currentSource?.type === 'podcast') {
@@ -72,6 +77,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
     audio.addEventListener('pause', handlePause);
     audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('durationchange', handleDurationChange);
+    audio.addEventListener('error', handleError);
     audio.addEventListener('ended', handleEnded);
 
     return () => {
@@ -79,6 +85,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
       audio.removeEventListener('pause', handlePause);
       audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('durationchange', handleDurationChange);
+      audio.removeEventListener('error', handleError);
       audio.removeEventListener('ended', handleEnded);
     };
   }, [currentSource]);
@@ -134,12 +141,13 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   return (
     <AudioPlayerContext.Provider value={value}>
       {children}
+      {/* crossOrigin removed: most podcast CDNs don't send CORS headers.
+          The attribute was causing browsers to silently block audio playback.
+          It's only needed for Web Audio API analysis, not plain playback. */}
       <audio
         ref={audioRef}
         preload="none"
-        crossOrigin="anonymous"
       />
     </AudioPlayerContext.Provider>
   );
 }
-

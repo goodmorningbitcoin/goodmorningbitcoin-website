@@ -74,13 +74,9 @@ export function RecentEpisodes() {
               }
             }
             
-            // Use CORS proxy for the audio file
-            const AUDIO_PROXY = 'https://corsproxy.io/?';
-            const proxiedAudioUrl = `${AUDIO_PROXY}${encodeURIComponent(finalAudioUrl)}`;
-            
             setCurrentSource({
               type: 'podcast',
-              url: proxiedAudioUrl,
+              url: finalAudioUrl,
               title: episode.title,
               artist: matchingShow.title,
               showTitle: matchingShow.title,

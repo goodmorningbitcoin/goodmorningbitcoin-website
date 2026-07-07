@@ -120,13 +120,9 @@ export default function PodcastPage() {
       }
     }
     
-    // Use CORS proxy for the audio file
-    const AUDIO_PROXY = 'https://corsproxy.io/?';
-    const proxiedAudioUrl = `${AUDIO_PROXY}${encodeURIComponent(finalAudioUrl)}`;
-    
     setCurrentSource({
       type: 'podcast',
-      url: proxiedAudioUrl,
+      url: finalAudioUrl,
       title: episode.title,
       artist: show?.title || 'Unknown Show',
       showTitle: show?.title || 'Unknown Show',
