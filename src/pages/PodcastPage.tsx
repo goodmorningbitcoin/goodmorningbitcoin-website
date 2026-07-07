@@ -438,7 +438,7 @@ export default function PodcastPage() {
                         <Play className="h-4 w-4" />
                       </Button>
                       <div className="flex-1 min-w-0">
-                        <Link to={`/podcast/${slug}/episode/${index}`}>
+                        <Link to={`/podcast/${slug}/episode/${encodeURIComponent(episode.guid || episode.title.toLowerCase().replace(/\s+/g, '-'))}`}>
                           <h3 className="font-semibold text-base mb-2 line-clamp-2 hover:text-orange-600 dark:hover:text-orange-400 transition-colors" itemProp="name">
                             {episode.title}
                           </h3>

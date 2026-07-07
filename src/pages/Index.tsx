@@ -190,11 +190,6 @@ export default function Index() {
         <NetworkStats />
       </section>
 
-      {/* Lightning Network Stats */}
-      <section className="max-w-6xl mx-auto px-4 pt-4">
-        <LightningNetworkStats />
-      </section>
-
       {/* Main Content Grid */}
       <main className="max-w-6xl mx-auto pt-10 pb-10 px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Featured Show */}
@@ -212,6 +207,11 @@ export default function Index() {
           <Bitcoin101 />
           <EmailSignup />
         </div>
+
+        {/* Lightning Network Stats */}
+        <section className="md:col-span-3">
+          <LightningNetworkStats />
+        </section>
 
         {/* Recent Episodes */}
         <section className="md:col-span-3">

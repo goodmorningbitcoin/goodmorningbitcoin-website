@@ -44,9 +44,12 @@ export default function EpisodePage() {
     retry: 1,
   });
 
-  // Find the episode by index (episodeId is the numeric index)
-  const episodeIndex = episodeId ? parseInt(episodeId, 10) : -1;
-  const episode = podcastData?.episodes?.[episodeIndex];
+  // Find episode by GUID (stable identifier) or fall back to index
+  const decodedEpisodeId = episodeId ? decodeURIComponent(episodeId) : '';
+  const episode = podcastData?.episodes?.find(
+    ep => ep.guid === decodedEpisodeId ||
+          ep.title.toLowerCase().replace(/\s+/g, '-') === decodedEpisodeId
+  ) || podcastData?.episodes?.[parseInt(episodeId || '', 10)];
 
   const stripHtml = (html: string): string => {
     const tmp = document.createElement('div');
