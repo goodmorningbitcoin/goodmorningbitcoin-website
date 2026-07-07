@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ScrollToTop } from "./components/ScrollToTop";
 
 import Index from "./pages/Index";
+import About from "./pages/About";
 import Shows from "./pages/Shows";
 import Community from "./pages/Community";
 import Schedule from "./pages/Schedule";
@@ -20,6 +21,7 @@ export function AppRouter() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/about" element={<About />} />
         <Route path="/shows" element={<Shows />} />
         <Route path="/community" element={<Community />} />
         <Route path="/schedule" element={<Schedule />} />
