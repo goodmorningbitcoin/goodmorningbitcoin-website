@@ -78,8 +78,10 @@ export default function About() {
 
             <div className="space-y-4 text-muted-foreground">
               <p>
-                Good Morning Bitcoin began as a radio station inside the game <strong className="text-foreground">Rust</strong> on the
-                <strong className="text-foreground"> Orange Bitcoin server</strong>. The mission was simple: give gamers a way to
+                Good Morning Bitcoin began as a radio station inside the game <strong className="text-foreground">Rust</strong> on the{' '}
+                <a href="https://orangem.art" target="_blank" rel="noopener noreferrer" className="text-orange-600 dark:text-orange-400 font-semibold hover:underline">
+                  Orange Bitcoin server
+                </a>. The mission was simple: give gamers a way to
                 learn about Bitcoin while they played. Players could tune in to curated Bitcoin podcasts and educational content
                 streamed directly through the in-game radio, turning mining and raiding time into learning time.
               </p>
@@ -90,7 +92,9 @@ export default function About() {
               </p>
               <p>
                 The station is now listed across a number of internet radio directories, including
-                <strong className="text-foreground"> Nostr Radio</strong>, making it accessible to listeners worldwide through any
+                <a href="https://nostr.blue/naddr1qqjxzdrxv5cxxvfk943r2drz956rzve495urxwtr95unjcmp8pjxzepkxccnjq3qn35s0hnjukw675njzqargeym7l9qzpg2dr6q9924yr798kafwvxsxpqqqpaq2va54sn" target="_blank" rel="noopener noreferrer" className="text-orange-600 dark:text-orange-400 font-semibold hover:underline">
+                  {' '}Nostr Radio
+                </a>, making it accessible to listeners worldwide through any
                 radio app, browser, or Nostr client. No ads. No sponsors. Just pure Bitcoin signal.
               </p>
             </div>
@@ -126,23 +130,22 @@ export default function About() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {shows.map((show) => (
-            <a
-              key={show.title}
-              href={show.fountainlink || '#'}
-              target={show.fountainlink ? '_blank' : undefined}
-              rel="noopener noreferrer"
-              className="group flex flex-col items-center text-center p-4 bg-white dark:bg-gray-900 rounded-xl border hover:border-orange-400 hover:shadow-md transition-all"
-            >
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900 dark:to-orange-800 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                <Radio className="h-4 w-4 text-orange-600 dark:text-orange-400" />
-              </div>
-              <span className="text-sm font-medium leading-tight">{show.title}</span>
-              {show.fountainlink && (
+          {shows.map((show) => {
+            const slug = show.title.toLowerCase().replace(/\s+/g, '-');
+            return (
+              <Link
+                key={show.title}
+                to={`/podcast/${encodeURIComponent(slug)}`}
+                className="group flex flex-col items-center text-center p-4 bg-white dark:bg-gray-900 rounded-xl border hover:border-orange-400 hover:shadow-md transition-all"
+              >
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900 dark:to-orange-800 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                  <Radio className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                </div>
+                <span className="text-sm font-medium leading-tight">{show.title}</span>
                 <ExternalLink className="h-3 w-3 text-muted-foreground mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
-              )}
-            </a>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </section>
 
