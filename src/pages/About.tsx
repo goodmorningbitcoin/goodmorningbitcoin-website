@@ -188,7 +188,7 @@ export default function About() {
             <Button
               asChild
               size="lg"
-              className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-orange-600 font-semibold px-8"
+              className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-8"
             >
               <Link to="/shows">
                 <Users className="h-5 w-5 mr-2" />
