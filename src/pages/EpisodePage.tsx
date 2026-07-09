@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { useSeo, breadcrumbSchema, useJsonLd } from '@/lib/useSeo';
+import { Seo, JsonLd, breadcrumbSchema } from '@/lib/useSeo';
 import { Play, Calendar, Clock, ExternalLink, ArrowLeft, Share2 } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
@@ -58,27 +58,6 @@ export default function EpisodePage() {
 
   const shareUrl = `/podcast/${slug}/episode/${episodeId}`;
 
-  useSeo({
-    title: episode
-      ? `${episode.title} - ${show?.title} | Good Morning Bitcoin Radio`
-      : 'Episode - Good Morning Bitcoin Radio',
-    description: episode
-      ? stripHtml(episode.description).substring(0, 160)
-      : 'Listen to this Bitcoin podcast episode on Good Morning Bitcoin Radio.',
-    path: shareUrl,
-    image: podcastData?.image,
-    ogType: 'article',
-  });
-
-  useJsonLd([
-    breadcrumbSchema([
-      { name: 'Home', path: '/' },
-      { name: 'Shows', path: '/shows' },
-      { name: show?.title || 'Podcast', path: `/podcast/${slug}` },
-      { name: episode?.title || 'Episode', path: shareUrl },
-    ]),
-  ]);
-
   const handlePlay = () => {
     if (show && episode) {
       playEpisode(show, episode);
@@ -112,6 +91,12 @@ export default function EpisodePage() {
   if (!show) {
     return (
       <Layout>
+        <Seo
+          title="Episode - Good Morning Bitcoin Radio"
+          description="Listen to this Bitcoin podcast episode on Good Morning Bitcoin Radio."
+          path={shareUrl}
+          ogType="article"
+        />
         <Header />
         <div className="max-w-4xl mx-auto py-10 px-4">
           <Card>
@@ -148,6 +133,12 @@ export default function EpisodePage() {
   if (error || !podcastData || !episode) {
     return (
       <Layout>
+        <Seo
+          title="Episode - Good Morning Bitcoin Radio"
+          description="Listen to this Bitcoin podcast episode on Good Morning Bitcoin Radio."
+          path={shareUrl}
+          ogType="article"
+        />
         <Header />
         <div className="max-w-4xl mx-auto py-10 px-4">
           <Card>
@@ -173,6 +164,23 @@ export default function EpisodePage() {
 
   return (
     <Layout>
+      <Seo
+        title={`${episode.title} - ${show.title} | Good Morning Bitcoin Radio`}
+        description={stripHtml(episode.description).substring(0, 160)}
+        path={shareUrl}
+        image={podcastData?.image}
+        ogType="article"
+      />
+      <JsonLd
+        schemas={[
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Shows', path: '/shows' },
+            { name: show.title, path: `/podcast/${slug}` },
+            { name: episode.title, path: shareUrl },
+          ]),
+        ]}
+      />
       <Header />
 
       {/* JSON-LD Structured Data */}

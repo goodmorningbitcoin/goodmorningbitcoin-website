@@ -1,17 +1,9 @@
-import { createRoot } from 'react-dom/client';
-
-// Import polyfills first
+// Entry point for both SSG build and client hydration.
+// vite-react-ssg handles createRoot/hydrateRoot internally.
 import './lib/polyfills.ts';
-
-import { ErrorBoundary } from '@/components/ErrorBoundary';
-import App from './App.tsx';
 import './index.css';
-
-// Using Inter Variable font for Good Morning Bitcoin
 import '@fontsource-variable/inter';
 
-createRoot(document.getElementById("root")!).render(
-  <ErrorBoundary>
-    <App />
-  </ErrorBoundary>
-);
+// The createRoot export triggers vite-react-ssg's client-side hydration.
+// On the server (SSG build), it renders to static HTML.
+import './entry.server.tsx';

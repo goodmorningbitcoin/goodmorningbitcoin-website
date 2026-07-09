@@ -1,4 +1,4 @@
-import { useSeo, breadcrumbSchema, useJsonLd } from '@/lib/useSeo';
+import { Seo, JsonLd, breadcrumbSchema } from '@/lib/useSeo';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -19,19 +19,6 @@ interface Show {
 }
 
 export default function Schedule() {
-  useSeo({
-    title: 'Schedule - Good Morning Bitcoin',
-    description: 'View the Good Morning Bitcoin radio schedule and see what\'s playing next on our 24/7 Bitcoin podcast stream.',
-    path: '/schedule',
-  });
-
-  useJsonLd([
-    breadcrumbSchema([
-      { name: 'Home', path: '/' },
-      { name: 'Schedule', path: '/schedule' },
-    ]),
-  ]);
-
   const { data: nowPlaying } = useNowPlaying();
   const { setCurrentSource } = useAudioPlayer();
 
@@ -99,6 +86,19 @@ export default function Schedule() {
 
   return (
     <Layout>
+      <Seo
+        title="Schedule - Good Morning Bitcoin"
+        description="View the Good Morning Bitcoin radio schedule and see what's playing next on our 24/7 Bitcoin podcast stream."
+        path="/schedule"
+      />
+      <JsonLd
+        schemas={[
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Schedule', path: '/schedule' },
+          ]),
+        ]}
+      />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">

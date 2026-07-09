@@ -12,6 +12,15 @@ export default defineConfig(() => ({
   plugins: [
     react(),
   ],
+  // SSG — pre-render routes to static HTML at build time
+  ssgOptions: {
+    entry: path.resolve(__dirname, "src/entry.server.tsx"),
+    // Mock browser globals (window, document, localStorage, etc.)
+    // so providers that access localStorage don't crash during SSR
+    mock: true,
+    // flat: /about → /about.html (GitHub Pages friendly)
+    dirStyle: 'flat',
+  },
   test: {
     globals: true,
     environment: 'jsdom',
@@ -20,7 +29,7 @@ export default defineConfig(() => ({
       return !log.includes("React Router Future Flag Warning");
     },
     env: {
-      DEBUG_PRINT_LIMIT: '0', // Suppress DOM output that exceeds AI context windows
+      DEBUG_PRINT_LIMIT: '0',
     },
   },
   resolve: {

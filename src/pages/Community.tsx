@@ -1,4 +1,4 @@
-import { useSeo, breadcrumbSchema, useJsonLd } from '@/lib/useSeo';
+import { Seo, JsonLd, breadcrumbSchema } from '@/lib/useSeo';
 import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
 import { CommentsSection } from '@/components/comments/CommentsSection';
@@ -10,24 +10,24 @@ import { Users, MessageCircle, Radio, ExternalLink } from 'lucide-react';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 export default function Community() {
-  useSeo({
-    title: 'Community - Good Morning Bitcoin',
-    description: 'Join the Good Morning Bitcoin community on Nostr. Discuss Bitcoin, podcasts, and connect with fellow Bitcoiners.',
-    path: '/community',
-  });
-
-  useJsonLd([
-    breadcrumbSchema([
-      { name: 'Home', path: '/' },
-      { name: 'Community', path: '/community' },
-    ]),
-  ]);
-
   const { user } = useCurrentUser();
   const communityUrl = new URL('https://goodmorningbitcoin.com/community');
 
   return (
     <Layout>
+      <Seo
+        title="Community - Good Morning Bitcoin"
+        description="Join the Good Morning Bitcoin community on Nostr. Discuss Bitcoin, podcasts, and connect with fellow Bitcoiners."
+        path="/community"
+      />
+      <JsonLd
+        schemas={[
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Community', path: '/community' },
+          ]),
+        ]}
+      />
       <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">

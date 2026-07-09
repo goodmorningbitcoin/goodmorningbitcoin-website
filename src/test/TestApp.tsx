@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createHead, UnheadProvider } from '@unhead/react/client';
+import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { NostrLoginProvider } from '@nostrify/react/login';
@@ -14,8 +14,6 @@ interface TestAppProps {
 }
 
 export function TestApp({ children }: TestAppProps) {
-  const head = createHead();
-
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: { retry: false },
@@ -29,7 +27,7 @@ export function TestApp({ children }: TestAppProps) {
   };
 
   return (
-    <UnheadProvider head={head}>
+    <HelmetProvider>
       <AppProvider storageKey='test-app-config' defaultConfig={defaultConfig}>
         <QueryClientProvider client={queryClient}>
           <NostrLoginProvider storageKey='test-login'>
@@ -47,7 +45,7 @@ export function TestApp({ children }: TestAppProps) {
           </NostrLoginProvider>
         </QueryClientProvider>
       </AppProvider>
-    </UnheadProvider>
+    </HelmetProvider>
   );
 }
 

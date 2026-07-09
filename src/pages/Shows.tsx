@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ExternalLink, Twitter, Search, Play, Eye } from 'lucide-react';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
-import { useSeo, breadcrumbSchema, useJsonLd } from '@/lib/useSeo';
+import { Seo, JsonLd, breadcrumbSchema } from '@/lib/useSeo';
 import showsData from '../../public/shows.json';
 
 interface Show {
@@ -24,36 +24,6 @@ interface Show {
 
 export default function Shows() {
   const shows = showsData as Show[];
-
-  useSeo({
-    title: 'Bitcoin Podcast Directory - Shows | Good Morning Bitcoin Radio',
-    description: 'Discover the best Bitcoin podcasts and shows featured on Good Morning Bitcoin Radio. Stream episodes from top Bitcoin podcasters, educators, and thought leaders in the cryptocurrency space.',
-    path: '/shows',
-    keywords: 'bitcoin podcasts, bitcoin shows, cryptocurrency podcasts, bitcoin podcast directory, bitcoin radio shows, btc podcasts, bitcoin content, bitcoin education, good morning bitcoin shows',
-  });
-
-  useJsonLd([
-    breadcrumbSchema([
-      { name: 'Home', path: '/' },
-      { name: 'Shows', path: '/shows' },
-    ]),
-    {
-      '@context': 'https://schema.org',
-      '@type': 'ItemList',
-      name: 'Bitcoin Podcast Directory',
-      numberOfItems: shows.length,
-      itemListElement: shows.map((show, index) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        item: {
-          '@type': 'PodcastSeries',
-          name: show.title,
-          description: show.description,
-          url: `https://goodmorningbitcoin.com/podcast/${encodeURIComponent(show.title.toLowerCase().replace(/\s+/g, '-'))}`,
-        },
-      })),
-    },
-  ]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showImages, setShowImages] = useState<Record<string, string>>({});
@@ -147,6 +117,36 @@ export default function Shows() {
 
   return (
     <Layout>
+      <Seo
+        title="Bitcoin Podcast Directory - Shows | Good Morning Bitcoin Radio"
+        description="Discover the best Bitcoin podcasts and shows featured on Good Morning Bitcoin Radio. Stream episodes from top Bitcoin podcasters, educators, and thought leaders in the cryptocurrency space."
+        path="/shows"
+        keywords="bitcoin podcasts, bitcoin shows, cryptocurrency podcasts, bitcoin podcast directory, bitcoin radio shows, btc podcasts, bitcoin content, bitcoin education, good morning bitcoin shows"
+      />
+      <JsonLd
+        schemas={[
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Shows', path: '/shows' },
+          ]),
+          {
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            name: 'Bitcoin Podcast Directory',
+            numberOfItems: shows.length,
+            itemListElement: shows.map((show, index) => ({
+              '@type': 'ListItem',
+              position: index + 1,
+              item: {
+                '@type': 'PodcastSeries',
+                name: show.title,
+                description: show.description,
+                url: `https://goodmorningbitcoin.com/podcast/${encodeURIComponent(show.title.toLowerCase().replace(/\s+/g, '-'))}`,
+              },
+            })),
+          },
+        ]}
+      />
       <Header />
       
       {/* Hero Header Section */}

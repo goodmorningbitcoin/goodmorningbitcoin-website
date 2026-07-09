@@ -14,24 +14,11 @@ import { Button } from '@/components/ui/button';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { useNowPlaying } from '@/hooks/useNowPlaying';
 import { LiveChat } from '@/components/LiveChat';
-import { useSeo, breadcrumbSchema, useJsonLd } from '@/lib/useSeo';
+import { Seo, JsonLd, breadcrumbSchema } from '@/lib/useSeo';
 
 export default function Index() {
   const { setCurrentSource, togglePlay, currentSource, isPlaying } = useAudioPlayer();
   const { data: nowPlaying } = useNowPlaying();
-
-  useSeo({
-    title: 'Bitcoin Radio - 24/7 Bitcoin Podcast & News Stream | Good Morning Bitcoin',
-    description: 'The #1 24/7 Bitcoin radio station. Stream live Bitcoin podcasts, breaking cryptocurrency news, and community discussions 24/7. Listen free on any device.',
-    path: '/',
-    keywords: 'bitcoin radio, 24/7 bitcoin radio, bitcoin radio station, bitcoin podcast, bitcoin news, cryptocurrency radio, btc radio, bitcoin stream, bitcoin community, bitcoin 247, lightning network, bitcoin audio',
-  });
-
-  useJsonLd([
-    breadcrumbSchema([
-      { name: 'Home', path: '/' },
-    ]),
-  ]);
 
   const handlePlayRadio = () => {
     // Set radio source if not already set
@@ -50,6 +37,14 @@ export default function Index() {
 
   return (
     <Layout>
+      <Seo
+        title="Bitcoin Radio - 24/7 Bitcoin Podcast & News Stream | Good Morning Bitcoin"
+        description="The #1 24/7 Bitcoin radio station. Stream live Bitcoin podcasts, breaking cryptocurrency news, and community discussions 24/7. Listen free on any device."
+        path="/"
+        keywords="bitcoin radio, 24/7 bitcoin radio, bitcoin radio station, bitcoin podcast, bitcoin news, cryptocurrency radio, btc radio, bitcoin stream, bitcoin community, bitcoin 247, lightning network, bitcoin audio"
+      />
+      <JsonLd schemas={[breadcrumbSchema([{ name: 'Home', path: '/' }])]} />
+
       {/* WebSite Schema for homepage */}
       <WebSiteSchema />
       <OrganizationSchema />

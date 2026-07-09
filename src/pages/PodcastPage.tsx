@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { useSeo, breadcrumbSchema, useJsonLd } from '@/lib/useSeo';
+import { Seo, JsonLd, breadcrumbSchema } from '@/lib/useSeo';
 import { Play, Calendar, Clock, ExternalLink, ArrowLeft } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
@@ -51,29 +51,6 @@ export default function PodcastPage() {
     retry: 1,
   });
 
-  // SEO with canonical, OG image from RSS, and breadcrumbs
-  useSeo({
-    title: show
-      ? `${show.title} - Bitcoin Podcast Episodes | Good Morning Bitcoin Radio`
-      : 'Bitcoin Podcast - Good Morning Bitcoin Radio',
-    description: show
-      ? `Listen to ${show.title} episodes on Good Morning Bitcoin Radio. ${show.description} Stream Bitcoin podcasts with Lightning support and zap your favorite creators.`
-      : 'Listen to Bitcoin podcast episodes on Good Morning Bitcoin Radio.',
-    path: `/podcast/${slug}`,
-    image: podcastData?.image,
-    keywords: show
-      ? `${show.title}, bitcoin podcast, ${show.title.toLowerCase()}, bitcoin episodes, cryptocurrency podcast, bitcoin radio, lightning zaps, ${show.title} episodes`
-      : 'bitcoin podcast, cryptocurrency podcast, bitcoin radio',
-  });
-
-  useJsonLd([
-    breadcrumbSchema([
-      { name: 'Home', path: '/' },
-      { name: 'Shows', path: '/shows' },
-      { name: show?.title || 'Podcast', path: `/podcast/${slug}` },
-    ]),
-  ]);
-
   const playEpisode = async (episode: Episode) => {
     // For complex tracking URLs, try to resolve to final URL first
     let finalAudioUrl = episode.audioUrl;
@@ -103,6 +80,12 @@ export default function PodcastPage() {
   if (!show) {
     return (
       <Layout>
+        <Seo
+          title="Bitcoin Podcast - Good Morning Bitcoin Radio"
+          description="Listen to Bitcoin podcast episodes on Good Morning Bitcoin Radio."
+          path={`/podcast/${slug}`}
+          keywords="bitcoin podcast, cryptocurrency podcast, bitcoin radio"
+        />
         <Header />
         <div className="max-w-4xl mx-auto py-10 px-4">
           <Card>
@@ -127,6 +110,21 @@ export default function PodcastPage() {
   if (!show.podcastXml) {
     return (
       <Layout>
+        <Seo
+          title={`${show.title} - Bitcoin Podcast Episodes | Good Morning Bitcoin Radio`}
+          description={`Listen to ${show.title} episodes on Good Morning Bitcoin Radio. ${show.description} Stream Bitcoin podcasts with Lightning support and zap your favorite creators.`}
+          path={`/podcast/${slug}`}
+          keywords={`${show.title}, bitcoin podcast, ${show.title.toLowerCase()}, bitcoin episodes, cryptocurrency podcast, bitcoin radio, lightning zaps, ${show.title} episodes`}
+        />
+        <JsonLd
+          schemas={[
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Shows', path: '/shows' },
+              { name: show.title, path: `/podcast/${slug}` },
+            ]),
+          ]}
+        />
         <Header />
         <div className="max-w-4xl mx-auto py-10 px-4">
           <Card>
@@ -199,6 +197,21 @@ export default function PodcastPage() {
   if (error || !podcastData) {
     return (
       <Layout>
+        <Seo
+          title={`${show.title} - Bitcoin Podcast Episodes | Good Morning Bitcoin Radio`}
+          description={`Listen to ${show.title} episodes on Good Morning Bitcoin Radio. ${show.description} Stream Bitcoin podcasts with Lightning support and zap your favorite creators.`}
+          path={`/podcast/${slug}`}
+          keywords={`${show.title}, bitcoin podcast, ${show.title.toLowerCase()}, bitcoin episodes, cryptocurrency podcast, bitcoin radio, lightning zaps, ${show.title} episodes`}
+        />
+        <JsonLd
+          schemas={[
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Shows', path: '/shows' },
+              { name: show.title, path: `/podcast/${slug}` },
+            ]),
+          ]}
+        />
         <Header />
         <div className="max-w-4xl mx-auto py-10 px-4">
           <Card>
@@ -293,6 +306,22 @@ export default function PodcastPage() {
 
   return (
     <Layout>
+      <Seo
+        title={`${show.title} - Bitcoin Podcast Episodes | Good Morning Bitcoin Radio`}
+        description={`Listen to ${show.title} episodes on Good Morning Bitcoin Radio. ${show.description} Stream Bitcoin podcasts with Lightning support and zap your favorite creators.`}
+        path={`/podcast/${slug}`}
+        image={podcastData?.image}
+        keywords={`${show.title}, bitcoin podcast, ${show.title.toLowerCase()}, bitcoin episodes, cryptocurrency podcast, bitcoin radio, lightning zaps, ${show.title} episodes`}
+      />
+      <JsonLd
+        schemas={[
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Shows', path: '/shows' },
+            { name: show.title, path: `/podcast/${slug}` },
+          ]),
+        ]}
+      />
       <Header />
       
       {/* JSON-LD Structured Data */}
