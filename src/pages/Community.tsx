@@ -5,8 +5,7 @@ import { CommentsSection } from '@/components/comments/CommentsSection';
 import { LoginArea } from '@/components/auth/LoginArea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Users, MessageCircle, Radio, ExternalLink } from 'lucide-react';
+import { Users, MessageCircle, Radio } from 'lucide-react';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 export default function Community() {
@@ -134,21 +133,6 @@ export default function Community() {
                       Use any Nostr client to participate in our community.
                     </p>
                   </div>
-                </div>
-                
-                <div className="flex gap-2 pt-4">
-                  <Button variant="outline" size="sm" asChild>
-                    <a href="https://nostr.com" target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Learn about Nostr
-                    </a>
-                  </Button>
-                  <Button variant="outline" size="sm" asChild>
-                    <a href="https://bitcoin.org" target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Learn about Bitcoin
-                    </a>
-                  </Button>
                 </div>
               </div>
             </CardContent>

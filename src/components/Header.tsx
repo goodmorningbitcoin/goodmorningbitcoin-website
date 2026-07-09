@@ -13,8 +13,8 @@ export function Header() {
   const navigationLinks = [
     { to: '/about', label: 'About', type: 'internal' },
     ...(user ? [{ to: '/community', label: 'Community', type: 'internal' }] : []),
-    { to: 'https://www.orangem.art/', label: 'Orange', type: 'external' },
     { to: '/shows', label: 'Shows', type: 'internal' },
+    { to: 'https://www.orangem.art/', label: 'Orange', type: 'external' },
     { to: 'https://nostr.blue/naddr1qqjxzdrxv5cxxvfk943r2drz956rzve495urxwtr95unjcmp8pjxzepkxccnjq3qn35s0hnjukw675njzqargeym7l9qzpg2dr6q9924yr798kafwvxsxpqqqpaq2va54sn', label: 'Nostr Radio', type: 'external' },
   ];
 
