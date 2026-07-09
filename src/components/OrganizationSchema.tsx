@@ -79,7 +79,7 @@ export function OrganizationSchema() {
     "areaServed": "Worldwide",
     "audience": {
       "@type": "Audience",
-      "audienceType": "Bitcoin enthusiasts, cryptocurrency investors, podcast listeners"
+      "audienceType": "Bitcoin enthusiasts, podcast listeners, Bitcoin community"
     },
     
     // Publishing information

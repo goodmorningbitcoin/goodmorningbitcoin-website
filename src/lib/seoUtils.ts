@@ -39,7 +39,7 @@ export function generatePodcastSEO(showTitle: string, showDescription: string, s
   return {
     title: `${showTitle} - Bitcoin Podcast Episodes | Good Morning Bitcoin Radio`,
     description: `Listen to ${showTitle} episodes on Good Morning Bitcoin Radio. ${showDescription} Stream Bitcoin podcasts with Lightning support and zap your favorite creators.`,
-    keywords: `${showTitle}, bitcoin podcast, ${showTitle.toLowerCase()}, bitcoin episodes, cryptocurrency podcast, bitcoin radio, lightning zaps, ${showTitle} episodes`,
+    keywords: `${showTitle}, bitcoin podcast, ${showTitle.toLowerCase()}, bitcoin episodes, bitcoin podcast, bitcoin radio, lightning zaps, ${showTitle} episodes`,
     canonical: slug ? `${baseUrl}/podcast/${slug}` : undefined,
     ogTitle: `${showTitle} - Bitcoin Podcast Episodes`,
     ogDescription: `Listen to ${showTitle} on Good Morning Bitcoin Radio. ${showDescription.substring(0, 160)}${showDescription.length > 160 ? '...' : ''}`,

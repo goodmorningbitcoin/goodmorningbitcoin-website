@@ -61,7 +61,7 @@ export function WebSiteSchema() {
       {
         "@type": "Thing",
         "name": "Bitcoin",
-        "description": "Digital cryptocurrency and decentralized monetary system"
+        "description": "Digital currency and decentralized monetary system"
       },
       {
         "@type": "Thing", 
@@ -97,7 +97,7 @@ export function WebSiteSchema() {
     // Audience and language
     "audience": {
       "@type": "Audience",
-      "audienceType": "Bitcoin enthusiasts, cryptocurrency investors, podcast listeners"
+      "audienceType": "Bitcoin enthusiasts, podcast listeners, Bitcoin community"
     },
     "inLanguage": "en-US"
   };

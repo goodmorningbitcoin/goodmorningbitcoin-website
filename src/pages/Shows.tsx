@@ -119,9 +119,9 @@ export default function Shows() {
     <Layout>
       <Seo
         title="Bitcoin Podcast Directory - Shows | Good Morning Bitcoin Radio"
-        description="Discover the best Bitcoin podcasts and shows featured on Good Morning Bitcoin Radio. Stream episodes from top Bitcoin podcasters, educators, and thought leaders in the cryptocurrency space."
+        description="Discover the best Bitcoin podcasts and shows featured on Good Morning Bitcoin Radio. Stream episodes from top Bitcoin podcasters, educators, and thought leaders in the Bitcoin space."
         path="/shows"
-        keywords="bitcoin podcasts, bitcoin shows, cryptocurrency podcasts, bitcoin podcast directory, bitcoin radio shows, btc podcasts, bitcoin content, bitcoin education, good morning bitcoin shows"
+        keywords="bitcoin podcasts, bitcoin shows, bitcoin podcast directory, bitcoin radio shows, btc podcasts, bitcoin content, bitcoin education, good morning bitcoin shows"
       />
       <JsonLd
         schemas={[

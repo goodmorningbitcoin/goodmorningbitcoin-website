@@ -84,7 +84,7 @@ export default function PodcastPage() {
           title="Bitcoin Podcast - Good Morning Bitcoin Radio"
           description="Listen to Bitcoin podcast episodes on Good Morning Bitcoin Radio."
           path={`/podcast/${slug}`}
-          keywords="bitcoin podcast, cryptocurrency podcast, bitcoin radio"
+          keywords="bitcoin podcast, bitcoin podcast, bitcoin radio"
         />
         <Header />
         <div className="max-w-4xl mx-auto py-10 px-4">
@@ -114,7 +114,7 @@ export default function PodcastPage() {
           title={`${show.title} - Bitcoin Podcast Episodes | Good Morning Bitcoin Radio`}
           description={`Listen to ${show.title} episodes on Good Morning Bitcoin Radio. ${show.description} Stream Bitcoin podcasts with Lightning support and zap your favorite creators.`}
           path={`/podcast/${slug}`}
-          keywords={`${show.title}, bitcoin podcast, ${show.title.toLowerCase()}, bitcoin episodes, cryptocurrency podcast, bitcoin radio, lightning zaps, ${show.title} episodes`}
+          keywords={`${show.title}, bitcoin podcast, ${show.title.toLowerCase()}, bitcoin episodes, bitcoin podcast, bitcoin radio, lightning zaps, ${show.title} episodes`}
         />
         <JsonLd
           schemas={[
@@ -201,7 +201,7 @@ export default function PodcastPage() {
           title={`${show.title} - Bitcoin Podcast Episodes | Good Morning Bitcoin Radio`}
           description={`Listen to ${show.title} episodes on Good Morning Bitcoin Radio. ${show.description} Stream Bitcoin podcasts with Lightning support and zap your favorite creators.`}
           path={`/podcast/${slug}`}
-          keywords={`${show.title}, bitcoin podcast, ${show.title.toLowerCase()}, bitcoin episodes, cryptocurrency podcast, bitcoin radio, lightning zaps, ${show.title} episodes`}
+          keywords={`${show.title}, bitcoin podcast, ${show.title.toLowerCase()}, bitcoin episodes, bitcoin podcast, bitcoin radio, lightning zaps, ${show.title} episodes`}
         />
         <JsonLd
           schemas={[
@@ -311,7 +311,7 @@ export default function PodcastPage() {
         description={`Listen to ${show.title} episodes on Good Morning Bitcoin Radio. ${show.description} Stream Bitcoin podcasts with Lightning support and zap your favorite creators.`}
         path={`/podcast/${slug}`}
         image={podcastData?.image}
-        keywords={`${show.title}, bitcoin podcast, ${show.title.toLowerCase()}, bitcoin episodes, cryptocurrency podcast, bitcoin radio, lightning zaps, ${show.title} episodes`}
+        keywords={`${show.title}, bitcoin podcast, ${show.title.toLowerCase()}, bitcoin episodes, bitcoin podcast, bitcoin radio, lightning zaps, ${show.title} episodes`}
       />
       <JsonLd
         schemas={[

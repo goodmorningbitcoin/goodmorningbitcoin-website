@@ -39,9 +39,10 @@ export default function Index() {
     <Layout>
       <Seo
         title="Bitcoin Radio - 24/7 Bitcoin Podcast & News Stream | Good Morning Bitcoin"
-        description="The #1 24/7 Bitcoin radio station. Stream live Bitcoin podcasts, breaking cryptocurrency news, and community discussions 24/7. Listen free on any device."
+        description="The #1 24/7 Bitcoin radio station. Stream live Bitcoin podcasts, breaking Bitcoin news, and community discussions 24/7. Listen free on any device."
         path="/"
-        keywords="bitcoin radio, 24/7 bitcoin radio, bitcoin radio station, bitcoin podcast, bitcoin news, cryptocurrency radio, btc radio, bitcoin stream, bitcoin community, bitcoin 247, lightning network, bitcoin audio"
+        image="/assets/img/og-default.jpg"
+        keywords="bitcoin radio, 24/7 bitcoin radio, bitcoin radio station, bitcoin podcast, bitcoin news, btc radio, bitcoin stream, bitcoin community, bitcoin 247, lightning network, bitcoin audio"
       />
       <JsonLd schemas={[breadcrumbSchema([{ name: 'Home', path: '/' }])]} />
 

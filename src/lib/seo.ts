@@ -22,7 +22,7 @@ export const DEFAULT_KEYWORDS = [
   'good morning bitcoin',
   'bitcoin podcast',
   'bitcoin news',
-  'cryptocurrency radio',
+  'btc radio',
   'bitcoin stream',
   'bitcoin community',
   'bitcoin 247',
