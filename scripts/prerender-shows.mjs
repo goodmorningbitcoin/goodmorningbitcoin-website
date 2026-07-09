@@ -1,21 +1,16 @@
 #!/usr/bin/env node
 /**
- * Prerender show/episode HTML stubs for social share previews.
+ * Prerender static pages, show pages, and episode stubs for social share previews.
  *
  * After the vite-react-ssg build, this script:
- *   1. Reads public/shows.json (35 shows)
- *   2. Fetches each show's RSS feed (no CORS in Node)
- *   3. Extracts show artwork + description from <itunes:image> / <description>
- *   4. Generates minimal HTML per route with correct OG/Twitter meta tags
+ *   1. Generates HTML stubs for static routes (/, /about, /shows, /community, /schedule)
+ *   2. Reads public/shows.json and fetches each show's RSS feed
+ *   3. Generates show pages and episode stubs with correct OG/Twitter meta tags
  *
- * Files generated:
- *   dist/podcast/{slug}/index.html          — show page (show artwork)
- *   dist/podcast/{slug}/episode/            — catch-all redirects to show page
+ * Each stub is a minimal HTML file (~2-3KB) that loads the same JS bundle
+ * so React hydrates the SPA normally. Only the <head> meta tags differ.
  *
- * The HTML is a minimal stub that loads the same JS bundle so React
- * hydrates the SPA normally. Only the <head> meta tags differ.
- *
- * Episode routes get the same show artwork (no per-episode pre-render).
+ * Episode routes get the show artwork (not per-episode artwork).
  */
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
@@ -26,6 +21,38 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const DIST = join(ROOT, 'dist');
 const SITE_URL = 'https://goodmorningbitcoin.com';
+const OG_DEFAULT_IMAGE = `${SITE_URL}/assets/img/og-default.jpg`;
+
+// ─── Static route SEO data (mirrors <Seo> components in each page) ────────
+
+const STATIC_ROUTES = [
+  {
+    path: '/',
+    title: 'Bitcoin Radio - 24/7 Bitcoin Podcast & News Stream | Good Morning Bitcoin',
+    description: 'The #1 24/7 Bitcoin radio station. Stream live Bitcoin podcasts, breaking Bitcoin news, and community discussions 24/7. Listen free on any device.',
+    image: `${SITE_URL}/assets/img/og-default.jpg`,
+  },
+  {
+    path: '/about',
+    title: 'About - Good Morning Bitcoin Radio',
+    description: 'Good Morning Bitcoin started as an in-game radio station in Rust on the Orange Bitcoin server. Now it is a 24/7 internet radio station streaming across the globe, including Nostr Radio.',
+  },
+  {
+    path: '/shows',
+    title: 'Bitcoin Podcast Directory - Shows | Good Morning Bitcoin Radio',
+    description: 'Discover the best Bitcoin podcasts and shows featured on Good Morning Bitcoin Radio. Stream episodes from top Bitcoin podcasters, educators, and thought leaders in the Bitcoin space.',
+  },
+  {
+    path: '/community',
+    title: 'Community - Good Morning Bitcoin',
+    description: 'Join the Good Morning Bitcoin community on Nostr. Discuss Bitcoin, podcasts, and connect with fellow Bitcoiners.',
+  },
+  {
+    path: '/schedule',
+    title: 'Schedule - Good Morning Bitcoin',
+    description: "View the Good Morning Bitcoin radio schedule and see what's playing next on our 24/7 Bitcoin podcast stream.",
+  },
+];
 
 // ─── Helpers ──────────────────────────────────────────────
 
@@ -78,25 +105,18 @@ async function fetchWithTimeout(url, ms = 15000) {
 }
 
 function parseShowArtwork(xml) {
-  // Channel-level <itunes:image href="...">
   const channelMatch = xml.match(/<channel[\s\S]*?<itunes:image\s+href="([^"]+)"/i);
   if (channelMatch) return channelMatch[1];
-
-  // Fallback: <image><url>...</url></image>
   const urlMatch = xml.match(/<image>[\s\S]*?<url>([^<]+)<\/url>/i);
   if (urlMatch) return urlMatch[1].trim();
-
   return null;
 }
 
 function parseShowDescription(xml) {
-  // <itunes:summary> is usually the best
   const summaryMatch = xml.match(/<channel[\s\S]*?<itunes:summary>([\s\S]*?)<\/itunes:summary>/i);
   if (summaryMatch) return stripHtml(summaryMatch[1]);
-
   const descMatch = xml.match(/<channel[\s\S]*?<description>([\s\S]*?)<\/description>/i);
   if (descMatch) return stripHtml(descMatch[1]);
-
   return '';
 }
 
@@ -133,12 +153,13 @@ function findJsAndCss() {
   return { jsFile, cssFile };
 }
 
-function generateHtml({ title, description, image, url, jsFile, cssFile }) {
-  const ogImage = image || `${SITE_URL}/assets/img/og-default.jpg`;
+function generateHtml({ title, description, image, url, jsFile, cssFile, robots }) {
+  const ogImage = image || OG_DEFAULT_IMAGE;
   const safeTitle = escapeHtml(title);
   const safeDesc = escapeAttr(description);
   const safeUrl = escapeAttr(url);
   const safeImage = escapeAttr(ogImage);
+  const robotsTag = robots ? `  <meta name="robots" content="${escapeAttr(robots)}">\n` : '';
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -148,8 +169,7 @@ function generateHtml({ title, description, image, url, jsFile, cssFile }) {
   <meta http-equiv="content-security-policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-src 'self' https:; font-src 'self'; base-uri 'self'; manifest-src 'self'; connect-src 'self' blob: https: wss:; img-src 'self' data: blob: https:; media-src 'self' https:">
   <title>${safeTitle}</title>
   <meta name="description" content="${safeDesc}">
-  <meta name="robots" content="index, follow">
-  <meta property="og:type" content="article">
+${robotsTag}  <meta property="og:type" content="website">
   <meta property="og:title" content="${safeTitle}">
   <meta property="og:description" content="${safeDesc}">
   <meta property="og:site_name" content="Good Morning Bitcoin Radio">
@@ -173,42 +193,88 @@ function generateHtml({ title, description, image, url, jsFile, cssFile }) {
 </html>`;
 }
 
+function writeRoute(pathSegments, html) {
+  // Write both flat .html (for redirect-free serving) and directory/index.html
+  const dir = join(DIST, ...pathSegments);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, 'index.html'), html);
+
+  // Also write flat .html file one level up
+  const lastSegment = pathSegments[pathSegments.length - 1];
+  const parentDir = pathSegments.slice(0, -1);
+  const flatPath = join(DIST, ...parentDir, `${lastSegment}.html`);
+  const flatDir = dirname(flatPath);
+  if (existsSync(flatDir)) {
+    writeFileSync(flatPath, html);
+  }
+}
+
 // ─── Main ─────────────────────────────────────────────────
 
 async function main() {
-  const showsPath = join(ROOT, 'public', 'shows.json');
-  const shows = JSON.parse(readFileSync(showsPath, 'utf-8'));
   const { jsFile, cssFile } = findJsAndCss();
-
-  console.log(`[prerender] ${shows.length} shows, JS: ${jsFile}, CSS: ${cssFile || 'none'}`);
+  console.log(`[prerender] JS: ${jsFile}, CSS: ${cssFile || 'none'}`);
 
   let generated = 0;
-  let failed = 0;
+  const allUrls = []; // Collect URLs for sitemap
 
-  for (const show of shows) {
-    const slug = slugify(show.title);
-    const showDir = join(DIST, 'podcast', slug);
+  // ── Static routes ──
+  console.log('\n[prerender] Static routes:');
+  for (const route of STATIC_ROUTES) {
+    const html = generateHtml({
+      title: route.title,
+      description: route.description,
+      image: route.image,
+      url: `${SITE_URL}${route.path}`,
+      jsFile,
+      cssFile,
+    });
+    if (route.path === '/') {
+      // Don't overwrite the SSR'd index.html — it has the full app shell
+      // with providers, error boundary, etc. Just keep it.
+      console.log(`[prerender] ⏭  / (keeping SSR'd index.html)`);
+    } else {
+      const segments = route.path.split('/').filter(Boolean);
+      writeRoute(segments, html);
+      generated++;
+      console.log(`[prerender] ✓ ${route.path}`);
+    }
+    allUrls.push(`${SITE_URL}${route.path}`);
+  }
 
-    let artwork = null;
-    let description = show.description || '';
-    let episodes = [];
+  // ── Show & episode routes ──
+  console.log('\n[prerender] Show & episode routes:');
+  const showsPath = join(ROOT, 'public', 'shows.json');
+  const shows = JSON.parse(readFileSync(showsPath, 'utf-8'));
 
-    // Fetch RSS feed once for artwork, description, and episodes
-    try {
+  // Fetch all RSS feeds in parallel with per-feed error isolation
+  const feedResults = await Promise.allSettled(
+    shows.map(async (show) => {
       const xml = await fetchWithTimeout(show.podcastXml);
-      artwork = parseShowArtwork(xml);
-      const rssDesc = parseShowDescription(xml);
-      if (rssDesc) description = rssDesc;
-      episodes = parseEpisodes(xml);
-    } catch (err) {
-      console.warn(`[prerender] RSS fetch failed for "${show.title}": ${err.message}`);
+      return {
+        show,
+        artwork: parseShowArtwork(xml),
+        description: parseShowDescription(xml),
+        episodes: parseEpisodes(xml),
+      };
+    })
+  );
+
+  for (const result of feedResults) {
+    if (result.status === 'rejected') {
+      console.warn(`[prerender] RSS fetch failed: ${result.reason?.message || result.reason}`);
+      continue;
     }
 
+    const { show, artwork, description: rssDesc, episodes } = result.value;
+    const slug = slugify(show.title);
+    const description = rssDesc || show.description || '';
     const showUrl = `${SITE_URL}/podcast/${encodeURIComponent(slug)}`;
     const showTitle = `${show.title} - Bitcoin Podcast | Good Morning Bitcoin Radio`;
     const showDesc = truncate(stripHtml(description), 160);
 
-    const html = generateHtml({
+    // Show page
+    const showHtml = generateHtml({
       title: showTitle,
       description: showDesc,
       image: artwork,
@@ -216,24 +282,14 @@ async function main() {
       jsFile,
       cssFile,
     });
-
-    mkdirSync(showDir, { recursive: true });
-    writeFileSync(join(showDir, 'index.html'), html);
-    // Also write a flat .html file so the bare URL (no trailing slash)
-    // is served as 200 instead of 301-redirecting to the directory.
-    // Some link-preview crawlers (Signal) don't follow redirects.
-    writeFileSync(join(DIST, 'podcast', `${slug}.html`), html);
+    writeRoute(['podcast', slug], showHtml);
     generated++;
+    allUrls.push(showUrl);
 
-    // Generate episode stubs for the most recent N episodes.
-    // Episode links shared in messaging apps will get the show artwork.
-    // Older episodes fall back to the SPA shell (404.html) — still functional,
-    // just generic OG tags.
+    // Episode stubs (last 50)
     const recent = episodes.slice(0, 50);
-
     for (const ep of recent) {
       const epSlug = encodeURIComponent(ep.guid || slugify(ep.title));
-      const epDir = join(showDir, 'episode', epSlug);
       const epUrl = `${SITE_URL}/podcast/${encodeURIComponent(slug)}/episode/${epSlug}`;
       const epTitle = `${ep.title} - ${show.title} | Good Morning Bitcoin Radio`;
       const epHtml = generateHtml({
@@ -244,17 +300,30 @@ async function main() {
         jsFile,
         cssFile,
       });
-      mkdirSync(epDir, { recursive: true });
-      writeFileSync(join(epDir, 'index.html'), epHtml);
-      // Flat file for redirect-free serving
-      writeFileSync(join(showDir, 'episode', `${epSlug}.html`), epHtml);
+      writeRoute(['podcast', slug, 'episode', epSlug], epHtml);
       generated++;
+      allUrls.push(epUrl);
     }
 
     console.log(`[prerender] ✓ /podcast/${slug} ${artwork ? '(artwork)' : '(no artwork)'}${recent.length ? ` + ${recent.length} episodes` : ''}`);
   }
 
-  console.log(`\n[prerender] Done: ${generated} show pages generated, ${failed} failed`);
+  // ── 404 page ──
+  const notFoundHtml = generateHtml({
+    title: 'Page Not Found - Good Morning Bitcoin',
+    description: 'The page you are looking for does not exist.',
+    url: `${SITE_URL}/404`,
+    jsFile,
+    cssFile,
+    robots: 'noindex, follow',
+  });
+  writeFileSync(join(DIST, '404.html'), notFoundHtml);
+  generated++;
+  console.log(`\n[prerender] ✓ /404 (noindex)`);
+
+  // ── Write URL list for sitemap generator ──
+  writeFileSync(join(DIST, 'sitemap-urls.json'), JSON.stringify(allUrls, null, 2));
+  console.log(`\n[prerender] Done: ${generated} pages generated, ${allUrls.length} URLs for sitemap`);
 }
 
 main().catch(err => {

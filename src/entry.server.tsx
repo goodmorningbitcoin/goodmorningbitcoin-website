@@ -58,7 +58,14 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       staleTime: 60000,
       gcTime: 5 * 60 * 1000,
-      retry: false,
+      retry: (failureCount, error: any) => {
+        // Don't retry on 4xx client errors — they won't fix themselves
+        const status = error?.status ?? error?.response?.status;
+        if (status >= 400 && status < 500) return false;
+        // Retry up to 2 times for transient failures with exponential backoff
+        return failureCount < 2;
+      },
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
     },
   },
 });

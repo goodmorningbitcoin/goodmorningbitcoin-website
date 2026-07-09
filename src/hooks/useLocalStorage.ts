@@ -15,6 +15,8 @@ export function useLocalStorage<T>(
   const deserialize = serializer?.deserialize || JSON.parse;
 
   const [state, setState] = useState<T>(() => {
+    // SSR-safe: localStorage doesn't exist during server-side rendering
+    if (typeof window === 'undefined') return defaultValue;
     try {
       const item = localStorage.getItem(key);
       return item ? deserialize(item) : defaultValue;
