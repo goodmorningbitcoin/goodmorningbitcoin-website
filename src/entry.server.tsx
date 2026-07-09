@@ -1,3 +1,66 @@
+// SSR-safe polyfills — must run before any provider imports.
+// During vite-react-ssg build (no jsdom/mock), localStorage and
+// window are undefined. Providers that access localStorage (NostrLogin,
+// AppProvider, useLocalStorage) crash without these stubs.
+const g = globalThis as Record<string, unknown>;
+if (!g.localStorage) {
+  const store = new Map<string, string>();
+  g.localStorage = {
+    getItem: (key: string) => store.get(key) ?? null,
+    setItem: (key: string, value: string) => { store.set(key, String(value)); },
+    removeItem: (key: string) => { store.delete(key); },
+    clear: () => store.clear(),
+    key: (index: number) => Array.from(store.keys())[index] ?? null,
+    get length() { return store.size; },
+  };
+}
+if (!g.sessionStorage) {
+  g.sessionStorage = g.localStorage;
+}
+if (!g.window) {
+  // Minimal window stub for components that access window.* during render
+  // (LoginDialog reads window.webln, etc.)
+  g.window = {
+    localStorage: g.localStorage,
+    sessionStorage: g.sessionStorage,
+    matchMedia: () => ({
+      matches: false,
+      media: '',
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }),
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    innerWidth: 1024,
+    innerHeight: 768,
+    location: { href: 'http://localhost:8080', pathname: '/', search: '', hash: '' },
+    navigator: { userAgent: 'node' },
+  };
+}
+// vite-react-ssg's client init code references document at module top level.
+// Without mock:true it's undefined in pure Node SSR.
+if (!g.document) {
+  g.document = {
+    querySelector: () => null,
+    getElementById: () => null,
+    createElement: () => ({ style: {}, setAttribute: () => {}, appendChild: () => {} }),
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    body: { appendChild: () => {}, insertBefore: () => {} },
+    head: { appendChild: () => {} },
+    readyState: 'complete',
+    documentElement: { setAttribute: () => {}, getAttribute: () => null },
+  };
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+if (!g.matchMedia) {
+  g.matchMedia = (g.window as any).matchMedia;
+}
+
 import { ViteReactSSG as ViteSSG } from 'vite-react-ssg';
 import { Outlet } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -50,12 +113,17 @@ const presetRelays = [
   { url: 'wss://relay.primal.net', name: 'Primal' },
 ];
 
+// During SSR (vite-react-ssg build), create QueryClient per request.
+// On client, create a stable singleton.
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
       staleTime: 60000,
       gcTime: 5 * 60 * 1000,
+      // Never retry during SSR — failed queries should just render
+      // their skeleton/loading state, not crash the build
+      retry: false,
     },
   },
 });

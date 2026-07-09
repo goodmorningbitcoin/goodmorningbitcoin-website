@@ -15,9 +15,6 @@ export default defineConfig(() => ({
   // SSG — pre-render routes to static HTML at build time
   ssgOptions: {
     entry: path.resolve(__dirname, "src/entry.server.tsx"),
-    // Mock browser globals (window, document, localStorage, etc.)
-    // so providers that access localStorage don't crash during SSR
-    mock: true,
     // flat: /about → /about.html (GitHub Pages friendly)
     dirStyle: 'flat',
   },
