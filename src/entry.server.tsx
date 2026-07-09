@@ -1,70 +1,12 @@
-// SSR-safe polyfills — must run before any provider imports.
-// During vite-react-ssg build (no jsdom/mock), localStorage and
-// window are undefined. Providers that access localStorage (NostrLogin,
-// AppProvider, useLocalStorage) crash without these stubs.
-const g = globalThis as Record<string, unknown>;
-if (!g.localStorage) {
-  const store = new Map<string, string>();
-  g.localStorage = {
-    getItem: (key: string) => store.get(key) ?? null,
-    setItem: (key: string, value: string) => { store.set(key, String(value)); },
-    removeItem: (key: string) => { store.delete(key); },
-    clear: () => store.clear(),
-    key: (index: number) => Array.from(store.keys())[index] ?? null,
-    get length() { return store.size; },
-  };
-}
-if (!g.sessionStorage) {
-  g.sessionStorage = g.localStorage;
-}
-if (!g.window) {
-  // Minimal window stub for components that access window.* during render
-  // (LoginDialog reads window.webln, etc.)
-  g.window = {
-    localStorage: g.localStorage,
-    sessionStorage: g.sessionStorage,
-    matchMedia: () => ({
-      matches: false,
-      media: '',
-      onchange: null,
-      addListener: () => {},
-      removeListener: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      dispatchEvent: () => false,
-    }),
-    addEventListener: () => {},
-    removeEventListener: () => {},
-    innerWidth: 1024,
-    innerHeight: 768,
-    location: { href: 'http://localhost:8080', pathname: '/', search: '', hash: '' },
-    navigator: { userAgent: 'node' },
-  };
-}
-// vite-react-ssg's client init code references document at module top level.
-// Without mock:true it's undefined in pure Node SSR.
-if (!g.document) {
-  g.document = {
-    querySelector: () => null,
-    getElementById: () => null,
-    createElement: () => ({ style: {}, setAttribute: () => {}, appendChild: () => {} }),
-    addEventListener: () => {},
-    removeEventListener: () => {},
-    body: { appendChild: () => {}, insertBefore: () => {} },
-    head: { appendChild: () => {} },
-    readyState: 'complete',
-    documentElement: { setAttribute: () => {}, getAttribute: () => null },
-  };
-}
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-if (!g.matchMedia) {
-  g.matchMedia = (g.window as any).matchMedia;
-}
+// Polyfills MUST run before any other import so that window/document/
+// localStorage exist before modules like @remix-run/router cache them.
+import './lib/ssr-polyfills';
 
-import { ViteReactSSG as ViteSSG } from 'vite-react-ssg';
-import { Outlet } from 'react-router-dom';
+import { ViteReactSSG } from 'vite-react-ssg/single-page';
+import { lazy, Suspense } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { StaticRouter } from 'react-router-dom/server';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Suspense, lazy } from 'react';
 import NostrProvider from '@/components/NostrProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -77,10 +19,7 @@ import { ScrollToTop } from '@/components/ScrollToTop';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
-// Eagerly load the homepage for fast initial render
 import Index from '@/pages/Index';
-
-// Lazy-load all other routes
 const About = lazy(() => import('@/pages/About'));
 const Shows = lazy(() => import('@/pages/Shows'));
 const Community = lazy(() => import('@/pages/Community'));
@@ -113,27 +52,39 @@ const presetRelays = [
   { url: 'wss://relay.primal.net', name: 'Primal' },
 ];
 
-// During SSR (vite-react-ssg build), create QueryClient per request.
-// On client, create a stable singleton.
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
       staleTime: 60000,
       gcTime: 5 * 60 * 1000,
-      // Never retry during SSR — failed queries should just render
-      // their skeleton/loading state, not crash the build
       retry: false,
     },
   },
 });
 
-/**
- * Root layout route — wraps all pages in the provider stack.
- * HelmetProvider is added by vite-react-ssg externally, so we start
- * with ErrorBoundary here.
- */
-function RootLayout() {
+function AppRoutes() {
+  return (
+    <>
+      <ScrollToTop />
+      <Suspense fallback={<PageSkeleton />}>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/shows" element={<Shows />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/schedule" element={<Schedule />} />
+          <Route path="/podcast/:slug" element={<PodcastPage />} />
+          <Route path="/podcast/:slug/episode/:episodeId" element={<EpisodePage />} />
+          <Route path="/:nip19" element={<NIP19Page />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </>
+  );
+}
+
+function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ErrorBoundary>
       <AppProvider storageKey="nostr:app-config" defaultConfig={defaultConfig} presetRelays={presetRelays}>
@@ -144,10 +95,7 @@ function RootLayout() {
                 <AudioPlayerProvider>
                   <TooltipProvider>
                     <Toaster />
-                    <ScrollToTop />
-                    <Suspense fallback={<PageSkeleton />}>
-                      <Outlet />
-                    </Suspense>
+                    {children}
                   </TooltipProvider>
                 </AudioPlayerProvider>
               </NWCProvider>
@@ -159,33 +107,38 @@ function RootLayout() {
   );
 }
 
-export const createRoot = ViteSSG(
-  {
-    routes: [
-      {
-        path: '/',
-        element: <RootLayout />,
-        children: [
-          { index: true, element: <Index /> },
-          { path: 'about', element: <About /> },
-          { path: 'shows', element: <Shows /> },
-          { path: 'community', element: <Community /> },
-          { path: 'schedule', element: <Schedule /> },
-          { path: 'podcast/:slug', element: <PodcastPage /> },
-          { path: 'podcast/:slug/episode/:episodeId', element: <EpisodePage /> },
-          { path: ':nip19', element: <NIP19Page /> },
-          { path: '*', element: <NotFound /> },
-        ],
-      },
-    ],
-    future: {
-      v7_startTransition: true,
-      v7_relativeSplatPath: true,
-    },
-  },
-  // Setup function — runs on both server and client
-  () => {},
-  {
-    // Client options
+/**
+ * Single-page SSG app.
+ *
+ * StaticRouter during SSR (no browser history API).
+ * BrowserRouter on the client for SPA navigation.
+ *
+ * Detection: our SSR polyfill's document.querySelector always returns null.
+ * On the real client, document.querySelector('html') returns the <html> element.
+ */
+function SsgApp() {
+  const isSSR = typeof document !== 'undefined' && document.querySelector('html') === null;
+
+  if (isSSR) {
+    return (
+      <Providers>
+        <StaticRouter location="/">
+          <AppRoutes />
+        </StaticRouter>
+      </Providers>
+    );
   }
+
+  return (
+    <Providers>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <AppRoutes />
+      </BrowserRouter>
+    </Providers>
+  );
+}
+
+export const createRoot = ViteReactSSG(
+  <SsgApp />,
+  () => {},
 );
