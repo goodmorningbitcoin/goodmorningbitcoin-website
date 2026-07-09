@@ -219,6 +219,10 @@ async function main() {
 
     mkdirSync(showDir, { recursive: true });
     writeFileSync(join(showDir, 'index.html'), html);
+    // Also write a flat .html file so the bare URL (no trailing slash)
+    // is served as 200 instead of 301-redirecting to the directory.
+    // Some link-preview crawlers (Signal) don't follow redirects.
+    writeFileSync(join(DIST, 'podcast', `${slug}.html`), html);
     generated++;
 
     // Generate episode stubs for the most recent N episodes.
@@ -242,6 +246,8 @@ async function main() {
       });
       mkdirSync(epDir, { recursive: true });
       writeFileSync(join(epDir, 'index.html'), epHtml);
+      // Flat file for redirect-free serving
+      writeFileSync(join(showDir, 'episode', `${epSlug}.html`), epHtml);
       generated++;
     }
 
