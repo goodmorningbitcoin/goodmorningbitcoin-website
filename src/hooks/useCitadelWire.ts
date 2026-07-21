@@ -1,5 +1,5 @@
-import { useNostr } from '@nostrify/react';
 import { useQuery } from '@tanstack/react-query';
+import { NRelay1 } from '@nostrify/nostrify';
 import { CITADEL_WIRE_PUBKEY, CITADEL_WIRE_RSS } from '@/lib/constants';
 import { parseCitadelWireStories, type CitadelWireStory } from '@/lib/citadelWireParser';
 
@@ -10,16 +10,15 @@ interface NostrPost {
 }
 
 export function useCitadelWire(limit = 5) {
-  const { nostr } = useNostr();
-
   return useQuery<CitadelWireStory[]>({
     queryKey: ['citadel-wire', limit],
     queryFn: async ({ signal }) => {
       let posts: NostrPost[] = [];
 
-      // Try Nostr first
+      // Try Nostr first — query Primal directly (Citadel Wire posts there)
       try {
-        const events = await nostr.query(
+        const relay = new NRelay1('wss://relay.primal.net');
+        const events = await relay.query(
           [{ kinds: [1], authors: [CITADEL_WIRE_PUBKEY], limit }],
           { signal: AbortSignal.any([signal, AbortSignal.timeout(5000)]) },
         );
@@ -35,16 +34,16 @@ export function useCitadelWire(limit = 5) {
         // Fall through to RSS
       }
 
-      // RSS fallback
+      // RSS fallback (no count param — rss2json requires paid key for it)
       if (posts.length === 0) {
         const response = await fetch(
-          `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(CITADEL_WIRE_RSS)}&count=${limit}`
+          `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(CITADEL_WIRE_RSS)}`
         );
         if (!response.ok) throw new Error('Failed to fetch Citadel Wire');
         const data = await response.json();
         if (data.status !== 'ok') throw new Error('Citadel Wire feed error');
 
-        posts = (data.items || []).map((item: {
+        posts = (data.items || []).slice(0, limit).map((item: {
           description?: string;
           pubDate: string;
           guid: string;
