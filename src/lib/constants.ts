@@ -18,3 +18,15 @@ export const RADIO_SOURCE = {
   title: 'Good Morning Bitcoin Radio',
   artist: 'Live Stream',
 };
+
+/** Citadel Wire Nostr pubkey (hex) */
+export const CITADEL_WIRE_PUBKEY = '01d077c7b21bfee89a6883edabcd408ef324e9ab431f46bf57d5860430bcb97c';
+
+/** Citadel Wire Nostr npub */
+export const CITADEL_WIRE_NPUB = 'npub1q8g803ajr0lw3xngs0k6hn2q3mejf6dtgv05d06h6krqgv9uh97q5382kp';
+
+/** Citadel Wire RSS feed URL (fallback) */
+export const CITADEL_WIRE_RSS = 'https://citadelwire.com/feed.xml';
+
+/** Citadel Wire website */
+export const CITADEL_WIRE_URL = 'https://citadelwire.com';

@@ -4,7 +4,7 @@ import { OrganizationSchema } from '@/components/OrganizationSchema';
 import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
 import { FeaturedShow } from '@/components/FeaturedShow';
-import { BitcoinNewsBrief } from '@/components/BitcoinNewsBrief';
+import { CitadelWireNews } from '@/components/CitadelWireNews';
 import { Bitcoin101 } from '@/components/Bitcoin101';
 import { EmailSignup } from '@/components/EmailSignup';
 import { NetworkStats } from '@/components/NetworkStats';
@@ -197,7 +197,7 @@ export default function Index() {
 
         {/* Bitcoin News Brief */}
         <section className="md:col-span-1 flex">
-          <BitcoinNewsBrief />
+          <CitadelWireNews />
         </section>
 
         {/* Bitcoin 101 + Email Signup */}
