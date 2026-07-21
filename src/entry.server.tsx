@@ -42,12 +42,11 @@ function PageSkeleton() {
 
 const defaultConfig: AppConfig = {
   theme: 'light',
-  relayUrl: 'wss://relay.nostr.band',
+  relayUrl: 'wss://relay.primal.net',
 };
 
 const presetRelays = [
   { url: 'wss://ditto.pub/relay', name: 'Ditto' },
-  { url: 'wss://relay.nostr.band', name: 'Nostr.Band' },
   { url: 'wss://relay.damus.io', name: 'Damus' },
   { url: 'wss://relay.primal.net', name: 'Primal' },
 ];

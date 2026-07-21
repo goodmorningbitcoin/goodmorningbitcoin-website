@@ -1,5 +1,5 @@
+import { useNostr } from '@nostrify/react';
 import { useQuery } from '@tanstack/react-query';
-import { NRelay1 } from '@nostrify/nostrify';
 import { CITADEL_WIRE_PUBKEY, CITADEL_WIRE_RSS } from '@/lib/constants';
 import { parseCitadelWireStories, type CitadelWireStory } from '@/lib/citadelWireParser';
 
@@ -10,15 +10,16 @@ interface NostrPost {
 }
 
 export function useCitadelWire(limit = 5) {
+  const { nostr } = useNostr();
+
   return useQuery<CitadelWireStory[]>({
     queryKey: ['citadel-wire', limit],
     queryFn: async ({ signal }) => {
       let posts: NostrPost[] = [];
 
-      // Try Nostr first — query Primal directly (Citadel Wire posts there)
+      // Try Nostr first
       try {
-        const relay = new NRelay1('wss://relay.primal.net');
-        const events = await relay.query(
+        const events = await nostr.query(
           [{ kinds: [1], authors: [CITADEL_WIRE_PUBKEY], limit }],
           { signal: AbortSignal.any([signal, AbortSignal.timeout(5000)]) },
         );
@@ -34,7 +35,7 @@ export function useCitadelWire(limit = 5) {
         // Fall through to RSS
       }
 
-      // RSS fallback (no count param — rss2json requires paid key for it)
+      // RSS fallback (no count param — rss2json requires paid API key for it)
       if (posts.length === 0) {
         const response = await fetch(
           `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(CITADEL_WIRE_RSS)}`
