@@ -77,7 +77,7 @@ export function saveSitemap(): void {
     return;
   }
 
-  const sitemap = generateSitemap();
+  generateSitemap();
   
   // This function is used for development and build processes
 }

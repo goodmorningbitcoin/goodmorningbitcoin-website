@@ -106,6 +106,7 @@ export function LiveChat() {
               
               // Handle EOSE (End of Stored Events) - continue streaming
               if (msg[0] === 'EOSE') {
+                // no action needed
               }
               
               // Handle CLOSED - relay closed the subscription

@@ -41,7 +41,7 @@ export function ValueSplitZapButton({ valueBlock, showTitle, className }: ValueS
     );
   }
 
-  const totalSplits = valueBlock.recipients.reduce((sum, recipient) => sum + recipient.split, 0);
+  void valueBlock.recipients.reduce((sum, recipient) => sum + recipient.split, 0);
 
   const onBoost = () => {
     handleBoost(valueBlock, amount, () => {

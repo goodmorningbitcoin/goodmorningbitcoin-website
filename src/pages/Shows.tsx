@@ -81,7 +81,8 @@ export default function Shows() {
             if (headResponse.ok) {
               finalAudioUrl = headResponse.url;
             }
-          } catch (error) {
+          } catch {
+            // HEAD request failed, use original URL
           }
         }
         

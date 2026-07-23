@@ -48,7 +48,7 @@ if (!g.window) {
   };
   g.window = win;
   // Also set on global scope so bare `window` references resolve
-  (globalThis as any).window = win;
+  (g as Record<string, unknown>).window = win;
 }
 
 if (!g.document) {
@@ -68,10 +68,9 @@ if (!g.document) {
     title: '',
   };
   g.document = doc;
-  (globalThis as any).document = doc;
+  (g as Record<string, unknown>).document = doc;
 }
 
 if (!g.matchMedia) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  g.matchMedia = (g.window as any).matchMedia;
+  g.matchMedia = (g.window as Record<string, unknown>).matchMedia;
 }

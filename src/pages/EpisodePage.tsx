@@ -1,14 +1,12 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Seo, JsonLd, breadcrumbSchema } from '@/lib/useSeo';
-import { Play, Calendar, Clock, ExternalLink, ArrowLeft, Share2 } from 'lucide-react';
+import { Play, Calendar, Clock, ArrowLeft, Share2 } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Badge } from '@/components/ui/badge';
-import { parsePodcastXml } from '@/lib/podcastXmlParser';
 import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
 import { usePodcastPlayer } from '@/hooks/usePodcastPlayer';
 import { useToast } from '@/hooks/useToast';

@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useStationHistory } from '@/hooks/useStationHistory';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
-import { parsePodcastXml } from '@/lib/podcastXmlParser';
 import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
 import showsData from '../../public/shows.json';
 
@@ -64,10 +63,11 @@ export function RecentEpisodes() {
                 if (headResponse.ok) {
                   finalAudioUrl = headResponse.url;
                 }
-              } catch (error) {
+              } catch {
+                // HEAD request failed, use original URL
               }
             }
-            
+
             setCurrentSource({
               type: 'podcast',
               url: finalAudioUrl,

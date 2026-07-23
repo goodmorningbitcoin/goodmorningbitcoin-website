@@ -7,7 +7,6 @@ import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { parsePodcastXml } from '@/lib/podcastXmlParser';
 import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import showsData from '../../public/shows.json';
@@ -63,7 +62,8 @@ export default function PodcastPage() {
         if (headResponse.ok) {
           finalAudioUrl = headResponse.url;
         }
-      } catch (error) {
+      } catch {
+        // HEAD request failed, use original URL
       }
     }
     

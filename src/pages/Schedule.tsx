@@ -166,7 +166,7 @@ export default function Schedule() {
             </h2>
             
             {scheduleItems.map((item, index) => {
-              const show = (showsData as Show[]).find(s => s.title === item.title);
+              const _show = (showsData as Show[]).find(s => s.title === item.title);
               
               return (
                 <Card key={index} className={item.isLive ? 'border-2 border-green-500' : ''}>

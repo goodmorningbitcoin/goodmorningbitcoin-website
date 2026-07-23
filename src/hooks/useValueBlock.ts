@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useNowPlaying } from '@/hooks/useNowPlaying';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
-import { parsePodcastXml } from '@/lib/podcastXmlParser';
 import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
 import type { ValueBlock } from '@/lib/podcastXmlParser';
 
