@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Seo, JsonLd, breadcrumbSchema } from '@/lib/useSeo';
 import { Play, Calendar, Clock, ExternalLink, ArrowLeft } from 'lucide-react';
+import NostrIcon from '@/assets/nostr-blue-icon.svg';
 import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -397,6 +398,14 @@ export default function PodcastPage() {
                       <a href={show.xlink} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="h-4 w-4 mr-2" />
                         X/Twitter
+                      </a>
+                    </Button>
+                  )}
+                  {show.nostr && (
+                    <Button asChild size="sm" variant="outline">
+                      <a href={`https://nostr.blue/${show.nostr}`} target="_blank" rel="noopener noreferrer">
+                        <img src={NostrIcon} alt="Nostr" className="h-4 w-4 mr-2" />
+                        Nostr
                       </a>
                     </Button>
                   )}

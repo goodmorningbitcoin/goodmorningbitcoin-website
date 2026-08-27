@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ExternalLink, Twitter, Search, Play, Eye } from 'lucide-react';
+import NostrIcon from '@/assets/nostr-blue-icon.svg';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
 import { Seo, JsonLd, breadcrumbSchema } from '@/lib/useSeo';
@@ -247,6 +248,19 @@ export default function Shows() {
                           >
                             <a href={show.xlink} target="_blank" rel="noopener noreferrer" title="Twitter/X">
                               <Twitter className="h-4 w-4" />
+                            </a>
+                          </Button>
+                        )}
+
+                        {show.nostr && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            asChild
+                            className="h-8 w-8 p-0"
+                          >
+                            <a href={`https://nostr.blue/${show.nostr}`} target="_blank" rel="noopener noreferrer" title="Nostr">
+                              <img src={NostrIcon} alt="Nostr" className="h-4 w-4" />
                             </a>
                           </Button>
                         )}
