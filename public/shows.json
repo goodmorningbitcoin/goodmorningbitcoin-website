@@ -144,6 +144,14 @@
     "podcastXml": "https://anchor.fm/s/9968c7a4/podcast/rss"
   },
   {
+    "title": "Local Bitcoiners",
+    "description": "A bitcoin podcast about Bitcoin meetups. Finding, building, and growing local Bitcoin culture through Bitcoin meetups. Reed and Rev meet with Bitcoin meetup organizers to learn about different local Bitcoin cultures and what makes them valuable.",
+    "fountainlink": "https://fountain.fm/show/Q48WBr6nT3mrbwMZ8ydY",
+    "xlink": "https://x.com/LocalBitcoiners",
+    "nostr": "npub1cvcgs83gw6pcrhvtmlf8gdqaegx93qkznwry96jteqhh2cexgkfq45rtya",
+    "podcastXml": "https://feeds.fountain.fm/uv4pyDVtNAiiCCx5emOU"
+  },
+  {
     "title": "Once Bitten! A Bitcoin Podcast",
     "description": "Bitcoin can be a very deep and confusing rabbit hole to fall into. This podcast is for people who are looking for answers. Daniel Prince, author of Choose Life, is on a mission to share real life stories of how Bitcoin has changed and shaped individuals and families lives forever.",
     "fountainlink": "https://www.fountain.fm/show/2oJTnUm5VKs3xmSVdf5n",
