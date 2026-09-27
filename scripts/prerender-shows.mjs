@@ -73,12 +73,13 @@ function episodeSlug(guid, title) {
     if (uuids && uuids.length > 0) return uuids[0];
     if (/^[0-9A-Za-z][0-9A-Za-z._-]*$/.test(guid)) return guid;
   }
-  // URL-shaped or missing GUID → title slug. '/' and '\' must be replaced:
-  // %2F/%5C in a path get decoded by GitHub Pages into separators → 404.
-  return title
+  // URL-shaped or missing GUID → title slug, restricted to [a-z0-9._-]:
+  // GH Pages 404s paths with %2F/%5C (decoded to separators) and various
+  // encoded punctuation (%3F %5B %5D %2C %40); '.', '_' and '-' are safe.
+  const slug = title
     .toLowerCase()
-    .replace(/[/\\]+/g, ' ')
-    .replace(/\s+/g, '-');
+    .replace(/[^a-z0-9._-]+/g, '-');
+  return slug || 'episode';
 }
 
 function escapeHtml(str) {

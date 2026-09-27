@@ -16,8 +16,12 @@ export function episodeSlug(guid: string | undefined, title: string): string {
     if (uuids && uuids.length > 0) return uuids[0];
     if (/^[0-9A-Za-z][0-9A-Za-z._-]*$/.test(guid)) return guid;
   }
-  return title
+  // URL-shaped or missing GUID → stable title slug (SPA matches this fallback).
+  // Slug alphabet is [a-z0-9._-] only: GH Pages fails to serve paths with
+  // %2F/%5C (decoded to separators) and various encoded punctuation
+  // (%3F %5B %5D %2C %40 — empirically 404), while '.', '_' and '-' are safe.
+  const slug = title
     .toLowerCase()
-    .replace(/[/\\]+/g, ' ')
-    .replace(/\s+/g, '-');
+    .replace(/[^a-z0-9._-]+/g, '-');
+  return slug || 'episode';
 }
