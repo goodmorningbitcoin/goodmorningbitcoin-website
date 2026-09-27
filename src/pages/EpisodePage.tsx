@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
+import { episodeSlug } from '@/lib/episodeSlug';
 import { usePodcastPlayer } from '@/hooks/usePodcastPlayer';
 import { useToast } from '@/hooks/useToast';
 import showsData from '../../public/shows.json';
@@ -41,10 +42,13 @@ export default function EpisodePage() {
     retry: 1,
   });
 
-  // Find episode by GUID (stable identifier) or fall back to index
+  // Find episode by GUID (stable identifier) or fall back to index.
+  // Slug rules must mirror src/lib/episodeSlug.ts.
   const decodedEpisodeId = episodeId ? decodeURIComponent(episodeId) : '';
   const episode = podcastData?.episodes?.find(
     ep => ep.guid === decodedEpisodeId ||
+          (ep.guid || '').replace(/[/\\]+/g, ' ').toLowerCase() === decodedEpisodeId ||
+          episodeSlug(ep.guid, ep.title) === decodedEpisodeId ||
           ep.title.toLowerCase().replace(/\s+/g, '-') === decodedEpisodeId
   ) || podcastData?.episodes?.[parseInt(episodeId || '', 10)];
 

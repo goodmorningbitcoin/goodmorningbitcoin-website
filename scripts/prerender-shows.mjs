@@ -60,6 +60,27 @@ function slugify(title) {
   return title.toLowerCase().replace(/\s+/g, '-');
 }
 
+// Stable episode slug — keep in sync with src/lib/episodeSlug.ts.
+// Single UUID → as-is; podhome concatenated remint (UUID-AUUID-B) → first UUID
+// (restores the original URL); other opaque tokens → as-is; URL-shaped or
+// missing GUID → title slug (GitHub Pages decodes %2F in encoded-URL slugs,
+// so those URLs can never resolve — title slug instead).
+function episodeSlug(guid, title) {
+  if (guid) {
+    const uuids = guid.match(
+      /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi,
+    );
+    if (uuids && uuids.length > 0) return uuids[0];
+    if (/^[0-9A-Za-z][0-9A-Za-z._-]*$/.test(guid)) return guid;
+  }
+  // URL-shaped or missing GUID → title slug. '/' and '\' must be replaced:
+  // %2F/%5C in a path get decoded by GitHub Pages into separators → 404.
+  return title
+    .toLowerCase()
+    .replace(/[/\\]+/g, ' ')
+    .replace(/\s+/g, '-');
+}
+
 function escapeHtml(str) {
   return String(str ?? '')
     .replace(/&/g, '&amp;')
@@ -160,6 +181,9 @@ function generateHtml({ title, description, image, url, jsFile, cssFile, robots 
   const safeUrl = escapeAttr(url);
   const safeImage = escapeAttr(ogImage);
   const robotsTag = robots ? `  <meta name="robots" content="${escapeAttr(robots)}">\n` : '';
+  const canonicalTag = robots?.includes('noindex')
+    ? ''
+    : `  <link rel="canonical" href="${safeUrl}">\n`;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -169,7 +193,7 @@ function generateHtml({ title, description, image, url, jsFile, cssFile, robots 
   <meta http-equiv="content-security-policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-src 'self' https:; font-src 'self'; base-uri 'self'; manifest-src 'self'; connect-src 'self' blob: https: wss:; img-src 'self' data: blob: https:; media-src 'self' https:">
   <title>${safeTitle}</title>
   <meta name="description" content="${safeDesc}">
-${robotsTag}  <meta property="og:type" content="website">
+${robotsTag}${canonicalTag}  <meta property="og:type" content="website">
   <meta property="og:title" content="${safeTitle}">
   <meta property="og:description" content="${safeDesc}">
   <meta property="og:site_name" content="Good Morning Bitcoin Radio">
@@ -288,8 +312,11 @@ async function main() {
 
     // Episode stubs (last 50)
     const recent = episodes.slice(0, 50);
+    const seenEpSlugs = new Set();
     for (const ep of recent) {
-      const epSlug = encodeURIComponent(ep.guid || slugify(ep.title));
+      const epSlug = encodeURIComponent(episodeSlug(ep.guid, ep.title));
+      if (seenEpSlugs.has(epSlug)) continue; // dedupe title-slug/guid collisions
+      seenEpSlugs.add(epSlug);
       const epUrl = `${SITE_URL}/podcast/${encodeURIComponent(slug)}/episode/${epSlug}`;
       const epTitle = `${ep.title} - ${show.title} | Good Morning Bitcoin Radio`;
       const epHtml = generateHtml({

@@ -4,4 +4,8 @@ Allow: /
 # Block Nostr auth/profile paths from indexing
 Disallow: /*?*
 
+# Flat .html twins of prerendered routes + /index.html — canonical tags
+# point to the clean URLs; keep these out of the crawl.
+Disallow: /*.html
+
 Sitemap: https://goodmorningbitcoin.com/sitemap.xml

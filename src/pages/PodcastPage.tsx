@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchPodcastFeed } from '@/lib/fetchPodcastFeed';
+import { episodeSlug } from '@/lib/episodeSlug';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import showsData from '../../public/shows.json';
 
@@ -440,7 +441,7 @@ export default function PodcastPage() {
                         <Play className="h-4 w-4" />
                       </Button>
                       <div className="flex-1 min-w-0">
-                        <Link to={`/podcast/${slug}/episode/${encodeURIComponent(episode.guid || episode.title.toLowerCase().replace(/\s+/g, '-'))}`}>
+                        <Link to={`/podcast/${slug}/episode/${encodeURIComponent(episodeSlug(episode.guid, episode.title))}`}>
                           <h3 className="font-semibold text-base mb-2 line-clamp-2 hover:text-orange-600 dark:hover:text-orange-400 transition-colors" itemProp="name">
                             {episode.title}
                           </h3>
